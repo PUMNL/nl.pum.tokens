@@ -61,6 +61,8 @@ function tokens_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = arra
 
   $sc = new CRM_Tokens_SectorCoordinator('Sector Coordinator', 'sc', 'Sector Coordinator');
   $sc->tokenValues($values, $cids, $job, $tokens, $context);
+
+
 }
 
 

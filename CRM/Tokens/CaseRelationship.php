@@ -46,7 +46,6 @@ class CRM_Tokens_CaseRelationship {
     $t[$this->token_name.'.address'] = t('Address of '.$this->token_label);
     $t[$this->token_name.'.work_address'] = t('Work address of '.$this->token_label);
     $t[$this->token_name.'.display_name'] = t('Display name of '.$this->token_label);
-    $t[$this->token_name.'.email_greeting'] = t('E-mail greeting of '.$this->token_label);
     $t[$this->token_name.'.email'] = t('E-mail address of '.$this->token_label);
     $t[$this->token_name.'.work_phone'] = t('Work phone number of '.$this->token_label);
     $t[$this->token_name.'.passport_first_name'] = t('Passport firstname of '.$this->token_label);
@@ -73,9 +72,6 @@ class CRM_Tokens_CaseRelationship {
     }
     if ($this->checkToken($tokens, 'display_name')) {
       $this->displayNameToken($values, $cids, 'display_name');
-    }
-    if ($this->checkToken($tokens, 'email_greeting')) {
-      $this->emailGreetingToken($values, $cids, 'email_greeting');
     }
     if ($this->checkToken($tokens, 'email')) {
       $this->emailToken($values, $cids, 'email');
@@ -121,7 +117,7 @@ class CRM_Tokens_CaseRelationship {
     }
   }
 
-  private function passportFirstName($values, $cids, $token) {
+  private function passportFirstName(&$values, $cids, $token) {
     $passport = CRM_Tokens_Config_PassportInfo::singleton();
     $name = '';
     if ($this->contact_id) {
@@ -132,7 +128,7 @@ class CRM_Tokens_CaseRelationship {
     }
   }
 
-  private function passportLastName($values, $cids, $token) {
+  private function passportLastName(&$values, $cids, $token) {
     $passport = CRM_Tokens_Config_PassportInfo::singleton();
     $name = '';
     if ($this->contact_id) {
@@ -143,7 +139,7 @@ class CRM_Tokens_CaseRelationship {
     }
   }
 
-  private function passportPartnerName($values, $cids, $token) {
+  private function passportPartnerName(&$values, $cids, $token) {
     $passport = CRM_Tokens_Config_PassportInfo::singleton();
     $name = '';
     if ($this->contact_id) {
@@ -154,7 +150,7 @@ class CRM_Tokens_CaseRelationship {
     }
   }
 
-  private function passportNumber($values, $cids, $token) {
+  private function passportNumber(&$values, $cids, $token) {
     $passport = CRM_Tokens_Config_PassportInfo::singleton();
     $number = '';
     if ($this->contact_id) {
@@ -165,7 +161,7 @@ class CRM_Tokens_CaseRelationship {
     }
   }
 
-  private function passportValid($values, $cids, $token) {
+  private function passportValid(&$values, $cids, $token) {
     $passport = CRM_Tokens_Config_PassportInfo::singleton();
     $valid = '';
     if ($this->contact_id) {
@@ -180,7 +176,7 @@ class CRM_Tokens_CaseRelationship {
     }
   }
 
-  private function birthDate($values, $cids, $token) {
+  private function birthDate(&$values, $cids, $token) {
     $formated_birth_date = '';
     if ($this->contact_id) {
       $birth_date = civicrm_api3('Contact', 'getvalue', array('return' => 'birth_date', 'id' => $this->contact_id));
@@ -194,7 +190,7 @@ class CRM_Tokens_CaseRelationship {
     }
   }
 
-  private function age($values, $cids, $token) {
+  private function age(&$values, $cids, $token) {
     $formated_birth_date = '';
     if ($this->contact_id) {
       $birth_date = civicrm_api3('Contact', 'getvalue', array('return' => 'birth_date', 'id' => $this->contact_id));
@@ -208,7 +204,7 @@ class CRM_Tokens_CaseRelationship {
     }
   }
 
-  private function nationality($values, $cids, $token) {
+  private function nationality(&$values, $cids, $token) {
     $passport = CRM_Tokens_Config_PassportInfo::singleton();
     $nationality = '';
     if ($this->contact_id) {
@@ -219,7 +215,7 @@ class CRM_Tokens_CaseRelationship {
     }
   }
 
-  private function prefixToken($values, $cids, $token) {
+  private function prefixToken(&$values, $cids, $token) {
     $prefix = '';
     if ($this->contact_id) {
       $prefix = civicrm_api3('Contact', 'getvalue', array('return' => 'individual_prefix', 'id' => $this->contact_id));
@@ -229,7 +225,7 @@ class CRM_Tokens_CaseRelationship {
     }
   }
 
-  private function firstNameToken($values, $cids, $token) {
+  private function firstNameToken(&$values, $cids, $token) {
     $name = '';
     if ($this->contact_id) {
       $name = civicrm_api3('Contact', 'getvalue', array('return' => 'first_name', 'id' => $this->contact_id));
@@ -239,7 +235,7 @@ class CRM_Tokens_CaseRelationship {
     }
   }
 
-  private function middleNameToken($values, $cids, $token) {
+  private function middleNameToken(&$values, $cids, $token) {
     $name = '';
     if ($this->contact_id) {
       $name = civicrm_api3('Contact', 'getvalue', array('return' => 'middle_name', 'id' => $this->contact_id));
@@ -249,7 +245,7 @@ class CRM_Tokens_CaseRelationship {
     }
   }
 
-  private function lastNameToken($values, $cids, $token) {
+  private function lastNameToken(&$values, $cids, $token) {
     $name = '';
     if ($this->contact_id) {
       $name = civicrm_api3('Contact', 'getvalue', array('return' => 'last_name', 'id' => $this->contact_id));
@@ -259,7 +255,7 @@ class CRM_Tokens_CaseRelationship {
     }
   }
 
-  private function displayNameToken($values, $cids, $token) {
+  private function displayNameToken(&$values, $cids, $token) {
     $name = '';
     if ($this->contact_id) {
       $name = civicrm_api3('Contact', 'getvalue', array('return' => 'display_name', 'id' => $this->contact_id));
@@ -272,9 +268,10 @@ class CRM_Tokens_CaseRelationship {
   private function workPhoneToken(&$values, $cids, $token) {
     $phone = '';
     if ($this->contact_id) {
-      $phoneNumber = civicrm_api3('Phone', 'getsingle', array(
+      $phoneNumber = civicrm_api('Phone', 'getsingle', array(
         'contact_id' => $this->contact_id,
         'location_type_id' => $this->location_types['Work'],
+        'version' => 3,
       ));
 
       if (!empty($phoneNumber) && !empty($phoneNumber['phone'])) {
@@ -290,17 +287,20 @@ class CRM_Tokens_CaseRelationship {
   private function workAddressToken(&$values, $cids, $token) {
     $formatedAddress = '';
     if ($this->contact_id) {
-      $address = civicrm_api3('Address', 'getsingle', array(
+      $address = civicrm_api('Address', 'getsingle', array(
         'contact_id' => $this->contact_id,
         'location_type_id' => $this->location_types['Work'],
+        'version' => 3,
       ));
 
-      $country_id = $address['country_id'];
-      $country = CRM_Core_PseudoConstant::country($country_id);
+      if (!empty($address) && !empty($address['id'])) {
+        $country_id = $address['country_id'];
+        $country = CRM_Core_PseudoConstant::country($country_id);
 
-      $formatedAddress .= $address['street_address']."<br>\r\n";
-      $formatedAddress .= $address['postal_code'].' '.$address['city']."<br>\r\n";
-      $formatedAddress .= $country;
+        $formatedAddress .= $address['street_address'] . "<br>\r\n";
+        $formatedAddress .= $address['postal_code'] . ' ' . $address['city'] . "<br>\r\n";
+        $formatedAddress .= $country;
+      }
     }
 
     foreach($cids as $cid) {
@@ -311,9 +311,10 @@ class CRM_Tokens_CaseRelationship {
   private function emailToken(&$values, $cids, $token) {
     $formattedEmail = '';
     if ($this->contact_id) {
-      $email = civicrm_api3('Email', 'getsingle', array(
+      $email = civicrm_api('Email', 'getsingle', array(
         'contact_id' => $this->contact_id,
         'is_primary' => 1,
+        'version' => 3,
       ));
 
       if (!empty($email) && !empty($email['email'])) {
@@ -329,17 +330,20 @@ class CRM_Tokens_CaseRelationship {
   private function addressToken(&$values, $cids, $token) {
     $formatedAddress = '';
     if ($this->contact_id) {
-      $address = civicrm_api3('Address', 'getsingle', array(
+      $address = civicrm_api('Address', 'getsingle', array(
         'contact_id' => $this->contact_id,
         'is_primary' => 1,
+        'version' => 3,
       ));
 
-      $country_id = $address['country_id'];
-      $country = CRM_Core_PseudoConstant::country($country_id);
+      if (!empty($address) && !empty($address['id'])) {
+        $country_id = $address['country_id'];
+        $country = CRM_Core_PseudoConstant::country($country_id);
 
-      $formatedAddress .= $address['street_address']."<br>\r\n";
-      $formatedAddress .= $address['postal_code'].' '.$address['city']."<br>\r\n";
-      $formatedAddress .= $country;
+        $formatedAddress .= $address['street_address'] . "<br>\r\n";
+        $formatedAddress .= $address['postal_code'] . ' ' . $address['city'] . "<br>\r\n";
+        $formatedAddress .= $country;
+      }
     }
 
     foreach($cids as $cid) {

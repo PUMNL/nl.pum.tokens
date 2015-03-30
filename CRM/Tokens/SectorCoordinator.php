@@ -14,12 +14,12 @@ class CRM_Tokens_SectorCoordinator extends CRM_Tokens_CaseRelationship {
     }
   }
 
-  private function sectorToken($values, $cids, $token) {
+  private function sectorToken(&$values, $cids, $token) {
     $sector = '';
     if ($this->contact_id) {
       $dao = CRM_Core_DAO::executeQuery("SELECT t.*
                                         FROM `civicrm_tag_enhanced` `e`
-                                        INNER JOIN `civicrm_tag` `t` ON `e`.`tag_id` = `t`.`id
+                                        INNER JOIN `civicrm_tag` `t` ON `e`.`tag_id` = `t`.`id`
                                         WHERE `e`.`coordinator_id` = %1
                                         AND
                                         (`start_date` IS NULL OR DATE(`start_date`) <= DATE(NOW()))

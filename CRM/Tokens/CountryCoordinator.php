@@ -14,7 +14,7 @@ class CRM_Tokens_CountryCoordinator extends CRM_Tokens_CaseRelationship {
     }
   }
 
-  private function countryToken($values, $cids, $token) {
+  private function countryToken(&$values, $cids, $token) {
     $country = '';
     if ($this->contact_id) {
       $dao = CRM_Core_DAO::executeQuery("SELECT c.*
@@ -22,6 +22,7 @@ class CRM_Tokens_CountryCoordinator extends CRM_Tokens_CaseRelationship {
                                         INNER JOIN civicrm_contact c on r.contact_id_a = c.id
                                         where r.relationship_type_id = %2
                                         AND r.contact_id_b = %1
+                                        AND r.case_id is NULL
                                         AND
                                         (`start_date` IS NULL OR DATE(`start_date`) <= DATE(NOW()))
                                         AND
