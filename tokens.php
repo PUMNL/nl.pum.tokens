@@ -9,6 +9,60 @@ function tokens_civicrm_buildForm($formName, &$form) {
     CRM_Tokens_CaseId::buildForm($formName, $form);
 }
 
+function tokens_civicrm_tokens(&$tokens) {
+
+  $client_tokens = new CRM_Tokens_ClientCase('client', 'Client');
+  $client_tokens->tokens($tokens);
+
+  $rct_tokens = new CRM_Tokens_CaseRelationship('Recruitment Team Member', 'rct', 'RCT');
+  $rct_tokens->tokens($tokens);
+
+  $rep_tokens = new CRM_Tokens_CaseRelationship('Representative is', 'representative', 'Representative');
+  $rep_tokens->tokens($tokens);
+
+  $expert_tokens = new CRM_Tokens_CaseRelationship('Expert', 'expert', 'Expert');
+  $expert_tokens->tokens($tokens);
+
+  $authorised_contact_tokens = new CRM_Tokens_CaseRelationship('Has authorised', 'authorised_contact', 'Authorised contact');
+  $authorised_contact_tokens->tokens($tokens);
+
+  $cc = new CRM_Tokens_CountryCoordinator('Country Coordinator is', 'cc', 'Country Coordinator');
+  $cc->tokens($tokens);
+
+  $proj_off = new CRM_Tokens_CountryCoordinator('Project Officer for', 'proj_off', 'Project officer');
+  $proj_off->tokens($tokens);
+
+  $sc = new CRM_Tokens_SectorCoordinator('Sector Coordinator', 'sc', 'Sector Coordinator');
+  $sc->tokens($tokens);
+}
+
+function tokens_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = array(), $context = null) {
+
+  $client_tokens = new CRM_Tokens_ClientCase('client', 'Client');
+  $client_tokens->tokenValues($values, $cids, $job, $tokens, $context);
+
+  $rct_tokens = new CRM_Tokens_CaseRelationship('Recruitment Team Member', 'rct', 'RCT');
+  $rct_tokens->tokenValues($values, $cids, $job, $tokens, $context);
+
+  $rep_tokens = new CRM_Tokens_CaseRelationship('Representative is', 'representative', 'Representative');
+  $rep_tokens->tokenValues($values, $cids, $job, $tokens, $context);
+
+  $expert_tokens = new CRM_Tokens_CaseRelationship('Expert', 'expert', 'Expert');
+  $expert_tokens->tokenValues($values, $cids, $job, $tokens, $context);
+
+  $authorised_contact_tokens = new CRM_Tokens_CaseRelationship('Has authorised', 'authorised_contact', 'Authorised contact');
+  $authorised_contact_tokens->tokenValues($values, $cids, $job, $tokens, $context);
+
+  $cc = new CRM_Tokens_CountryCoordinator('Country Coordinator is', 'cc', 'Country Coordinator');
+  $cc->tokenValues($values, $cids, $job, $tokens, $context);
+
+  $proj_off = new CRM_Tokens_CountryCoordinator('Project Officer for', 'proj_off', 'Project officer');
+  $proj_off->tokenValues($values, $cids, $job, $tokens, $context);
+
+  $sc = new CRM_Tokens_SectorCoordinator('Sector Coordinator', 'sc', 'Sector Coordinator');
+  $sc->tokenValues($values, $cids, $job, $tokens, $context);
+}
+
 
 /**
  * Implementation of hook_civicrm_config
