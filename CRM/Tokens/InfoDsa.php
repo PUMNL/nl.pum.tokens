@@ -46,8 +46,8 @@ class CRM_Tokens_InfoDsa {
           $dao = CRM_Core_DAO::executeQuery($sql);
           if($dao->N == 1) {
             $dao->fetch();
-            $this->startdate = $dao->start_date;
-            $this->enddate = $dao->end_date;
+            $this->startdate = $dao->Start_date;
+            $this->enddate = $dao->End_date;
           }
         } catch (Exception $e) {
           //do nothing
