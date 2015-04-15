@@ -43,23 +43,23 @@ class CRM_Tokens_CaseRelationship {
 
   public function tokens(&$tokens) {
     $t = array();
-    $t[$this->token_name.'.address'] = t('Address of '.$this->token_label);
-    $t[$this->token_name.'.work_address'] = t('Work address of '.$this->token_label);
-    $t[$this->token_name.'.display_name'] = t('Display name of '.$this->token_label);
-    $t[$this->token_name.'.email'] = t('E-mail address of '.$this->token_label);
-    $t[$this->token_name.'.work_phone'] = t('Work phone number of '.$this->token_label);
-    $t[$this->token_name.'.passport_first_name'] = t('Passport firstname of '.$this->token_label);
-    $t[$this->token_name.'.passport_last_name'] = t('Passport lastname of '.$this->token_label);
-    $t[$this->token_name.'.passport_number'] = t('Passport number of '.$this->token_label);
-    $t[$this->token_name.'.passport_valid'] = t('Passport valid date of '.$this->token_label);
-    $t[$this->token_name.'.passport_partner_name'] = t('Passport partner name of '.$this->token_label);
-    $t[$this->token_name.'.nationlity'] = t('Nationality of '.$this->token_label);
-    $t[$this->token_name.'.prefix'] = t('Prefix of '.$this->token_label);
-    $t[$this->token_name.'.first_name'] = t('First name of '.$this->token_label);
-    $t[$this->token_name.'.middle_name'] = t('Middle name of '.$this->token_label);
-    $t[$this->token_name.'.last_name'] = t('Last name of '.$this->token_label);
-    $t[$this->token_name.'.birth_date'] = t('Birth date of '.$this->token_label);
-    $t[$this->token_name.'.age'] = t('Age of '.$this->token_label);
+    $t[$this->token_name.'.address'] = ts('Address of '.$this->token_label);
+    $t[$this->token_name.'.work_address'] = ts('Work address of '.$this->token_label);
+    $t[$this->token_name.'.display_name'] = ts('Display name of '.$this->token_label);
+    $t[$this->token_name.'.email'] = ts('E-mail address of '.$this->token_label);
+    $t[$this->token_name.'.work_phone'] = ts('Work phone number of '.$this->token_label);
+    $t[$this->token_name.'.passport_first_name'] = ts('Passport firstname of '.$this->token_label);
+    $t[$this->token_name.'.passport_last_name'] = ts('Passport lastname of '.$this->token_label);
+    $t[$this->token_name.'.passport_number'] = ts('Passport number of '.$this->token_label);
+    $t[$this->token_name.'.passport_valid'] = ts('Passport valid date of '.$this->token_label);
+    $t[$this->token_name.'.passport_partner_name'] = ts('Passport partner name of '.$this->token_label);
+    $t[$this->token_name.'.nationlity'] = ts('Nationality of '.$this->token_label);
+    $t[$this->token_name.'.prefix'] = ts('Prefix of '.$this->token_label);
+    $t[$this->token_name.'.first_name'] = ts('First name of '.$this->token_label);
+    $t[$this->token_name.'.middle_name'] = ts('Middle name of '.$this->token_label);
+    $t[$this->token_name.'.last_name'] = ts('Last name of '.$this->token_label);
+    $t[$this->token_name.'.birth_date'] = ts('Birth date of '.$this->token_label);
+    $t[$this->token_name.'.age'] = ts('Age of '.$this->token_label);
     $tokens[$this->token_name] = $t;
   }
 

@@ -4,7 +4,7 @@ class CRM_Tokens_CountryCoordinator extends CRM_Tokens_CaseRelationship {
 
   public function tokens(&$tokens) {
     parent::tokens($tokens);
-    $tokens[$this->token_name][$this->token_name.'.country'] = t('Country of '.$this->token_label);
+    $tokens[$this->token_name][$this->token_name.'.country'] = ts('Country of '.$this->token_label);
   }
 
   public function tokenValues(&$values, $cids, $job = null, $tokens = array(), $context = null) {

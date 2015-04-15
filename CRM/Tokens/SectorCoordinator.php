@@ -4,7 +4,7 @@ class CRM_Tokens_SectorCoordinator extends CRM_Tokens_CaseRelationship {
 
   public function tokens(&$tokens) {
     parent::tokens($tokens);
-    $tokens[$this->token_name][$this->token_name.'.sector'] = t('Sector of '.$this->token_label);
+    $tokens[$this->token_name][$this->token_name.'.sector'] = ts('Sector of '.$this->token_label);
   }
 
   public function tokenValues(&$values, $cids, $job = null, $tokens = array(), $context = null) {
