@@ -59,8 +59,8 @@ class CRM_Tokens_InfoDsa {
   
   public function tokens(&$tokens) {
     $t = array();
-    $t[$this->token_name.'.startdate'] = t('Start date of '.$this->token_label);
-    $t[$this->token_name.'.enddate'] = t('End date of '.$this->token_label);
+    $t[$this->token_name.'.startdate'] = ts('Start date of '.$this->token_label);
+    $t[$this->token_name.'.enddate'] = ts('End date of '.$this->token_label);
     $tokens[$this->token_name] = $t;
   }
   

@@ -31,10 +31,10 @@ class CRM_Tokens_CaseNumber {
 
   public function tokens(&$tokens) {
     $t = array();
-    $t[$this->token_name.'.sequence'] = t('Sequential number in '.$this->token_label);
-    $t[$this->token_name.'.type'] = t('Type code in '.$this->token_label);
-    $t[$this->token_name.'.country'] = t('County code in  '.$this->token_label);
-	$t[$this->token_name.'.full'] = t('Full notation of '.$this->token_label);
+    $t[$this->token_name.'.sequence'] = ts('Sequential number in '.$this->token_label);
+    $t[$this->token_name.'.type'] = ts('Type code in '.$this->token_label);
+    $t[$this->token_name.'.country'] = ts('County code in  '.$this->token_label);
+	$t[$this->token_name.'.full'] = ts('Full notation of '.$this->token_label);
     $tokens[$this->token_name] = $t;
   }
   
