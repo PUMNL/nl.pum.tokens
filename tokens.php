@@ -34,6 +34,15 @@ function tokens_civicrm_tokens(&$tokens) {
 
   $sc = new CRM_Tokens_SectorCoordinator('Sector Coordinator', 'sc', 'Sector Coordinator');
   $sc->tokens($tokens);
+  
+  $main_info = new CRM_Tokens_MainActivityInfo('mainactivity_info', 'Main Activity information');
+  $main_info->tokens($tokens);
+  
+  $info_dsa = new CRM_Tokens_InfoDsa('info_dsa', 'Info for DSA');
+  $info_dsa->tokens($tokens);
+  
+  $case_num = new CRM_Tokens_CaseNumber('case_number', 'PUM Case number');
+  $case_num->tokens($tokens);
 }
 
 function tokens_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = array(), $context = null) {
@@ -62,7 +71,14 @@ function tokens_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = arra
   $sc = new CRM_Tokens_SectorCoordinator('Sector Coordinator', 'sc', 'Sector Coordinator');
   $sc->tokenValues($values, $cids, $job, $tokens, $context);
 
-
+  $main_info = new CRM_Tokens_MainActivityInfo('mainactivity_info', 'Main Activity information');
+  $main_info->tokenValues($values, $cids, $job, $tokens, $context);
+  
+  $info_dsa = new CRM_Tokens_InfoDsa('info_dsa', 'Info for DSA');
+  $info_dsa->tokenValues($values, $cids, $job, $tokens, $context);
+  
+  $case_num = new CRM_Tokens_CaseNumber('case_number', 'PUM Case number');
+  $case_num->tokenValues($values, $cids, $job, $tokens, $context);
 }
 
 
