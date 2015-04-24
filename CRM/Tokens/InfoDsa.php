@@ -14,6 +14,8 @@ class CRM_Tokens_InfoDsa {
 
     if (empty($case_id)) {
       $this->case_id = CRM_Tokens_CaseId::getCaseId();
+    } elseif($case_id=='parent') {
+      $this->case_id = CRM_Tokens_CaseId::getParentCaseId();
     } else {
       $this->case_id = $case_id;
     }

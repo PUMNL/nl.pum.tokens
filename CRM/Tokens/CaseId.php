@@ -18,6 +18,7 @@
 class CRM_Tokens_CaseId {
 
     private static $caseId = false;
+    private static $parentCaseId = false;
 
 
     /**
@@ -30,12 +31,38 @@ class CRM_Tokens_CaseId {
     public static function buildForm($formName, &$form) {
         if (!empty($form->_caseId)) {
             self::$caseId = $form->_caseId;
+            // now retrieve the parentCaseId as well
+            self::$parentCaseId = self::fetchParentCaseId(self::$caseId);
         }
     }
 
     public static function getCaseId() {
         return self::$caseId;
     }
+	
+	public static function getParentCaseId() {
+        return self::$parentCaseId;
+    }
 
-
+	public static function fetchParentCaseId($childCaseId) {
+        if(!$childCaseId) {
+            return false;
+        }
+		// retrieve custom table and - columns
+        $customGroup = civicrm_api3('CustomGroup', 'getsingle', array('name' => 'travel_parent'));
+        $customFields = civicrm_api3('CustomField', 'get', array('custom_group_id' => $customGroup['id']));
+        $cols = array();
+        foreach($customFields['values'] as $fld) {
+            $cols[] = $fld['column_name'] . ' AS ' . $fld['name'];
+        }
+        // build and execute query to retrieve parentCaseId from custom table
+        $sql = 'SELECT ' . implode(', ', $cols) . ' FROM ' . $customGroup['table_name'] . ' WHERE entity_id=' . $childCaseId;
+        $dao = CRM_Core_DAO::executeQuery($sql);
+        if ($dao->fetch()) {
+            // data retrieved: return parentCaseId
+            return $dao->case_id;
+        } else {
+            return false;
+        }
+    }
 }
