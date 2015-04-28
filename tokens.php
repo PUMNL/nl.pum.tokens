@@ -46,6 +46,9 @@ function tokens_civicrm_tokens(&$tokens) {
   $case_num = new CRM_Tokens_CaseNumber('case_number', 'PUM Case number');
   $case_num->tokens($tokens);
   
+  $bus_part_tokens = new CRM_Tokens_CaseRelationship('Business participant is', 'business_participant', 'Business participant');
+  $bus_part_tokens->tokens($tokens);
+  
   // parent case tokens
   $parent_client_tokens = new CRM_Tokens_ClientCase('parent_client', 'Parent client', 'parent');
   $parent_client_tokens->tokens($tokens);
@@ -76,6 +79,9 @@ function tokens_civicrm_tokens(&$tokens) {
 
   $parent_case_num = new CRM_Tokens_CaseNumber('parent_case_number', 'Parent PUM Case number', 'parent');
   $parent_case_num->tokens($tokens);
+  
+  $parent_bus_part_tokens = new CRM_Tokens_CaseRelationship('Business participant is', 'parent_business_participant', 'Parent Business participant', 'parent');
+  $parent_bus_part_tokens->tokens($tokens);
 
 }
 
@@ -116,6 +122,9 @@ function tokens_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = arra
   $case_num = new CRM_Tokens_CaseNumber('case_number', 'PUM Case number');
   $case_num->tokenValues($values, $cids, $job, $tokens, $context);
   
+  $bus_part_tokens = new CRM_Tokens_CaseRelationship('Business participant is', 'business_participant', 'Business participant');
+  $bus_part_tokens->tokenValues($values, $cids, $job, $tokens, $context);
+  
   // parent case tokens
   
   $parent_client_tokens = new CRM_Tokens_ClientCase('parent_client', 'Parent Client', 'parent');
@@ -147,6 +156,9 @@ function tokens_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = arra
   
   $parent_case_num = new CRM_Tokens_CaseNumber('parent_case_number', 'Parent PUM Case number', 'parent');
   $parent_case_num->tokenValues($values, $cids, $job, $tokens, $context);
+  
+  $parent_bus_part_tokens = new CRM_Tokens_CaseRelationship('Business participant is', 'parent_business_participant', 'Parent Business participant', 'parent');
+  $parent_bus_part_tokens->tokenValues($values, $cids, $job, $tokens, $context);
 }
 
 

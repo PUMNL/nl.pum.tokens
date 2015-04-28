@@ -26,7 +26,7 @@ class CRM_Tokens_CaseRelationship {
     } else {
       $this->case_id = $case_id;
     }
-
+	
     try {
       $this->contact_id = civicrm_api3('Relationship', 'getvalue', array(
         'return' => 'contact_id_b',
