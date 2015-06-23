@@ -62,6 +62,7 @@ class CRM_Tokens_CaseRelationship {
     $t[$this->token_name.'.last_name'] = ts('Last name of '.$this->token_label);
     $t[$this->token_name.'.birth_date'] = ts('Birth date of '.$this->token_label);
     $t[$this->token_name.'.age'] = ts('Age of '.$this->token_label);
+	$t[$this->token_name.'.home_phone'] = ts('Home phone number of '.$this->token_label);
     $tokens[$this->token_name] = $t;
   }
 
@@ -116,6 +117,9 @@ class CRM_Tokens_CaseRelationship {
     }
     if ($this->checkToken($tokens, 'age')) {
       $this->age($values, $cids, 'age');
+    }
+	if ($this->checkToken($tokens, 'home_phone')) {
+      $this->homePhoneToken($values, $cids, 'home_phone');
     }
   }
 
@@ -267,6 +271,32 @@ class CRM_Tokens_CaseRelationship {
     }
   }
 
+  private function homePhoneToken(&$values, $cids, $token) {
+    $phone = '';
+    $phoneAr = array();
+    if ($this->contact_id) {
+      $phoneNumber = civicrm_api('Phone', 'get', array(
+        'contact_id' => $this->contact_id,
+        'location_type_id' => $this->location_types['Home'],
+        'version' => 3,
+      ));
+
+      if (!empty($phoneNumber['values'])) {
+	    foreach($phoneNumber['values'] as $value) {
+          if(!empty($value['phone'])) {
+            $phoneAr[] = $value['phone'];
+		  }
+        }
+      }
+	  
+	  $phone = implode(', ', $phoneAr);
+    }
+
+    foreach($cids as $cid) {
+      $values[$cid][$this->token_name.'.'.$token] = $phone;
+    }
+  }
+  
   private function workPhoneToken(&$values, $cids, $token) {
     $phone = '';
     if ($this->contact_id) {
