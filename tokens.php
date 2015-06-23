@@ -83,11 +83,13 @@ function tokens_civicrm_tokens(&$tokens) {
   $parent_bus_part_tokens = new CRM_Tokens_CaseRelationship('Business participant is', 'parent_business_participant', 'Parent Business participant', 'parent');
   $parent_bus_part_tokens->tokens($tokens);
   
+  $grant_coordinator_tokens = new CRM_Tokens_CaseRelationship('Grant Coordinator', 'grant_coordinator', 'Grant Coordinator');
+  $grant_coordinator_tokens->tokens($tokens);
+
   // misc
-  
+
   $info_tokens = new CRM_Tokens_SysInfo('server', 'Server');
   $info_tokens->tokens($tokens);
-
 }
 
 function tokens_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = array(), $context = null) {
@@ -164,6 +166,9 @@ function tokens_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = arra
   
   $parent_bus_part_tokens = new CRM_Tokens_CaseRelationship('Business participant is', 'parent_business_participant', 'Parent Business participant', 'parent');
   $parent_bus_part_tokens->tokenValues($values, $cids, $job, $tokens, $context);
+
+  $grant_coordinator_tokens = new CRM_Tokens_CaseRelationship('Grant Coordinator', 'grant_coordinator', 'Grant Coordinator');
+  $grant_coordinator_tokens->tokenValues($values, $cids, $job, $tokens, $context);
   
   // misc
   
