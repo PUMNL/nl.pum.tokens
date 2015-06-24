@@ -12,7 +12,6 @@ function tokens_civicrm_buildForm($formName, &$form) {
 function tokens_civicrm_tokens(&$tokens) {
   
   // current case tokens
-  
   $client_tokens = new CRM_Tokens_ClientCase('client', 'Client');
   $client_tokens->tokens($tokens);
 
@@ -83,10 +82,12 @@ function tokens_civicrm_tokens(&$tokens) {
   $parent_bus_part_tokens = new CRM_Tokens_CaseRelationship('Business participant is', 'parent_business_participant', 'Parent Business participant', 'parent');
   $parent_bus_part_tokens->tokens($tokens);
 
+  //activity source tokens
+  $activity_source_tokens = new CRM_Tokens_ActivitySourceContactTokens();
+  $activity_source_tokens->tokens($tokens);
 }
 
 function tokens_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = array(), $context = null) {
-  
   // current case tokens
   
   $client_tokens = new CRM_Tokens_ClientCase('client', 'Client');
@@ -159,6 +160,10 @@ function tokens_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = arra
   
   $parent_bus_part_tokens = new CRM_Tokens_CaseRelationship('Business participant is', 'parent_business_participant', 'Parent Business participant', 'parent');
   $parent_bus_part_tokens->tokenValues($values, $cids, $job, $tokens, $context);
+
+  //activity source tokens
+  $activity_source_tokens = new CRM_Tokens_ActivitySourceContactTokens();
+  $activity_source_tokens->tokenValues($values, $cids, $job, $tokens, $context);
 }
 
 
