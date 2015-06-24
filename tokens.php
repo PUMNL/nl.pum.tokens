@@ -12,7 +12,6 @@ function tokens_civicrm_buildForm($formName, &$form) {
 function tokens_civicrm_tokens(&$tokens) {
   
   // current case tokens
-  
   $client_tokens = new CRM_Tokens_ClientCase('client', 'Client');
   $client_tokens->tokens($tokens);
 
@@ -87,13 +86,15 @@ function tokens_civicrm_tokens(&$tokens) {
   $grant_coordinator_tokens->tokens($tokens);
 
   // misc
-
   $info_tokens = new CRM_Tokens_SysInfo('server', 'Server');
   $info_tokens->tokens($tokens);
+
+  //activity source tokens
+  $activity_source_tokens = new CRM_Tokens_ActivitySourceContactTokens();
+  $activity_source_tokens->tokens($tokens);
 }
 
 function tokens_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = array(), $context = null) {
-  
   // current case tokens
   
   $client_tokens = new CRM_Tokens_ClientCase('client', 'Client');
@@ -171,9 +172,12 @@ function tokens_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = arra
   $grant_coordinator_tokens->tokenValues($values, $cids, $job, $tokens, $context);
   
   // misc
-  
   $info_tokens = new CRM_Tokens_SysInfo('server', 'Server');
   $info_tokens->tokenValues($values, $cids, $job, $tokens, $context);
+
+  //activity source tokens
+  $activity_source_tokens = new CRM_Tokens_ActivitySourceContactTokens();
+  $activity_source_tokens->tokenValues($values, $cids, $job, $tokens, $context);
 }
 
 
