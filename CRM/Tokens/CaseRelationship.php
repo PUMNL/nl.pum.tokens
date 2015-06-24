@@ -46,7 +46,15 @@ class CRM_Tokens_CaseRelationship {
   public function tokens(&$tokens) {
     $t = array();
     $t[$this->token_name.'.address'] = ts('Address of '.$this->token_label);
+	$t[$this->token_name.'.address_street'] = ts('Address street of '.$this->token_label);
+	$t[$this->token_name.'.address_postalcode'] = ts('Address postalcode of '.$this->token_label);
+	$t[$this->token_name.'.address_city'] = ts('Address city of '.$this->token_label);
+	$t[$this->token_name.'.address_country'] = ts('Address country of '.$this->token_label);
     $t[$this->token_name.'.work_address'] = ts('Work address of '.$this->token_label);
+	$t[$this->token_name.'.work_street'] = ts('Work address street of '.$this->token_label);
+	$t[$this->token_name.'.work_postalcode'] = ts('Work address postalcode of '.$this->token_label);
+	$t[$this->token_name.'.work_city'] = ts('Work address city of '.$this->token_label);
+	$t[$this->token_name.'.work_country'] = ts('Work address country of '.$this->token_label);
     $t[$this->token_name.'.display_name'] = ts('Display name of '.$this->token_label);
     $t[$this->token_name.'.email'] = ts('E-mail address of '.$this->token_label);
     $t[$this->token_name.'.work_phone'] = ts('Work phone number of '.$this->token_label);
@@ -70,8 +78,32 @@ class CRM_Tokens_CaseRelationship {
     if ($this->checkToken($tokens, 'address')) {
       $this->addressToken($values, $cids, 'address');
     }
+	if ($this->checkToken($tokens, 'address_street')) {
+      $this->addressStreetToken($values, $cids, 'address_street');
+    }
+	if ($this->checkToken($tokens, 'address_postalcode')) {
+      $this->addressPostalCodeToken($values, $cids, 'address_postalcode');
+    }
+	if ($this->checkToken($tokens, 'address_city')) {
+      $this->addressCityToken($values, $cids, 'address_city');
+    }
+	if ($this->checkToken($tokens, 'address_country')) {
+      $this->addressCountryToken($values, $cids, 'address_country');
+    }
     if ($this->checkToken($tokens, 'work_address')) {
       $this->workAddressToken($values, $cids, 'work_address');
+    }
+	if ($this->checkToken($tokens, 'work_street')) {
+      $this->workStreetToken($values, $cids, 'work_street');
+    }
+	if ($this->checkToken($tokens, 'work_postalcode')) {
+      $this->workPostalCodeToken($values, $cids, 'work_postalcode');
+    }
+	if ($this->checkToken($tokens, 'work_city')) {
+      $this->workCityToken($values, $cids, 'work_city');
+    }
+	if ($this->checkToken($tokens, 'work_country')) {
+      $this->workCountryToken($values, $cids, 'work_country');
     }
     if ($this->checkToken($tokens, 'display_name')) {
       $this->displayNameToken($values, $cids, 'display_name');
@@ -315,7 +347,7 @@ class CRM_Tokens_CaseRelationship {
       $values[$cid][$this->token_name.'.'.$token] = $phone;
     }
   }
-
+  
   private function workAddressToken(&$values, $cids, $token) {
     $formatedAddress = '';
     if ($this->contact_id) {
@@ -339,7 +371,84 @@ class CRM_Tokens_CaseRelationship {
       $values[$cid][$this->token_name.'.'.$token] = $formatedAddress;
     }
   }
+  
+  private function workStreetToken(&$values, $cids, $token) {
+    $formatedAddress = '';
+    if ($this->contact_id) {
+      $address = civicrm_api('Address', 'getsingle', array(
+        'contact_id' => $this->contact_id,
+        'location_type_id' => $this->location_types['Work'],
+        'version' => 3,
+      ));
 
+      if (!empty($address) && !empty($address['street_address'])) {
+        $formatedAddress = $address['street_address'];
+      }
+    }
+
+    foreach($cids as $cid) {
+      $values[$cid][$this->token_name.'.'.$token] = $formatedAddress;
+    }
+  }
+  
+  private function workPostalCodeToken(&$values, $cids, $token) {
+    $formatedAddress = '';
+    if ($this->contact_id) {
+      $address = civicrm_api('Address', 'getsingle', array(
+        'contact_id' => $this->contact_id,
+        'location_type_id' => $this->location_types['Work'],
+        'version' => 3,
+      ));
+
+      if (!empty($address) && !empty($address['postal_code'])) {
+        $formatedAddress = $address['postal_code'];
+      }
+    }
+
+    foreach($cids as $cid) {
+      $values[$cid][$this->token_name.'.'.$token] = $formatedAddress;
+    }
+  }
+  
+  private function workCityToken(&$values, $cids, $token) {
+    $formatedAddress = '';
+    if ($this->contact_id) {
+      $address = civicrm_api('Address', 'getsingle', array(
+        'contact_id' => $this->contact_id,
+        'location_type_id' => $this->location_types['Work'],
+        'version' => 3,
+      ));
+
+      if (!empty($address) && !empty($address['city'])) {
+        $formatedAddress = $address['city'];
+      }
+    }
+
+    foreach($cids as $cid) {
+      $values[$cid][$this->token_name.'.'.$token] = $formatedAddress;
+    }
+  }
+  
+  private function workCountryToken(&$values, $cids, $token) {
+    $formatedAddress = '';
+    if ($this->contact_id) {
+      $address = civicrm_api('Address', 'getsingle', array(
+        'contact_id' => $this->contact_id,
+        'location_type_id' => $this->location_types['Work'],
+        'version' => 3,
+      ));
+
+      if (!empty($address) && !empty($address['id'])) {
+        $country_id = $address['country_id'];
+        $formatedAddress = CRM_Core_PseudoConstant::country($country_id);
+      }
+    }
+
+    foreach($cids as $cid) {
+      $values[$cid][$this->token_name.'.'.$token] = $formatedAddress;
+    }
+  }
+  
   private function emailToken(&$values, $cids, $token) {
     $formattedEmail = '';
     if ($this->contact_id) {
@@ -375,6 +484,83 @@ class CRM_Tokens_CaseRelationship {
         $formatedAddress .= $address['street_address'] . "<br>\r\n";
         $formatedAddress .= $address['postal_code'] . ' ' . $address['city'] . "<br>\r\n";
         $formatedAddress .= $country;
+      }
+    }
+
+    foreach($cids as $cid) {
+      $values[$cid][$this->token_name.'.'.$token] = $formatedAddress;
+    }
+  }
+  
+  private function addressStreetToken(&$values, $cids, $token) {
+    $formatedAddress = '';
+    if ($this->contact_id) {
+      $address = civicrm_api('Address', 'getsingle', array(
+        'contact_id' => $this->contact_id,
+        'is_primary' => 1,
+        'version' => 3,
+      ));
+
+      if (!empty($address) && !empty($address['street_address'])) {
+        $formatedAddress = $address['street_address'];
+      }
+    }
+
+    foreach($cids as $cid) {
+      $values[$cid][$this->token_name.'.'.$token] = $formatedAddress;
+    }
+  }
+  
+  private function addressPostalCodeToken(&$values, $cids, $token) {
+    $formatedAddress = '';
+    if ($this->contact_id) {
+      $address = civicrm_api('Address', 'getsingle', array(
+        'contact_id' => $this->contact_id,
+        'is_primary' => 1,
+        'version' => 3,
+      ));
+
+      if (!empty($address) && !empty($address['postal_code'])) {
+        $formatedAddress = $address['postal_code'];
+      }
+    }
+
+    foreach($cids as $cid) {
+      $values[$cid][$this->token_name.'.'.$token] = $formatedAddress;
+    }
+  }
+  
+  private function addressCityToken(&$values, $cids, $token) {
+    $formatedAddress = '';
+    if ($this->contact_id) {
+      $address = civicrm_api('Address', 'getsingle', array(
+        'contact_id' => $this->contact_id,
+        'is_primary' => 1,
+        'version' => 3,
+      ));
+
+      if (!empty($address) && !empty($address['city'])) {
+        $formatedAddress = $address['city'];
+      }
+    }
+
+    foreach($cids as $cid) {
+      $values[$cid][$this->token_name.'.'.$token] = $formatedAddress;
+    }
+  }
+  
+  private function addressCountryToken(&$values, $cids, $token) {
+    $formatedAddress = '';
+    if ($this->contact_id) {
+      $address = civicrm_api('Address', 'getsingle', array(
+        'contact_id' => $this->contact_id,
+        'is_primary' => 1,
+        'version' => 3,
+      ));
+
+      if (!empty($address) && !empty($address['id'])) {
+        $country_id = $address['country_id'];
+        $formatedAddress = CRM_Core_PseudoConstant::country($country_id);
       }
     }
 
