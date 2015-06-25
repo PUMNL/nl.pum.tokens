@@ -312,16 +312,13 @@ class CRM_Tokens_CaseRelationship {
         'location_type_id' => $this->location_types['Home'],
         'version' => 3,
       ));
-
-      if (!empty($phoneNumber['values'])) {
-	    foreach($phoneNumber['values'] as $value) {
-          if(!empty($value['phone'])) {
-            $phoneAr[] = $value['phone'];
-		  }
-        }
-      }
 	  
-	  $phone = implode(', ', $phoneAr);
+      if (!empty($phoneNumber['values'])) {
+	    $phoneFilter = $this->phoneFilter($phoneNumber['values']);
+	    if (!empty($phoneFilter['phone'])) {
+		  $phone = $phoneFilter['phone'];
+		}
+      }
     }
 
     foreach($cids as $cid) {
@@ -332,20 +329,62 @@ class CRM_Tokens_CaseRelationship {
   private function workPhoneToken(&$values, $cids, $token) {
     $phone = '';
     if ($this->contact_id) {
-      $phoneNumber = civicrm_api('Phone', 'getsingle', array(
+      $phoneNumber = civicrm_api('Phone', 'get', array(
         'contact_id' => $this->contact_id,
         'location_type_id' => $this->location_types['Work'],
         'version' => 3,
       ));
 
-      if (!empty($phoneNumber) && !empty($phoneNumber['phone'])) {
-        $phone = $phoneNumber['phone'];
+      if (!empty($phoneNumber['values'])) {
+	    $phoneFilter = $this->phoneFilter($phoneNumber['values']);
+	    if (!empty($phoneFilter['phone'])) {
+		  $phone = $phoneFilter['phone'];
+		}
       }
     }
 
     foreach($cids as $cid) {
       $values[$cid][$this->token_name.'.'.$token] = $phone;
     }
+  }
+  
+  private function phoneFilter($phoneNumbers) {
+    $phoneTypeGroupId = civicrm_api('OptionGroup', 'getsingle', array(
+      'version' => 3,
+      'name' => 'phone_type',
+      'return' => 'id',
+	));
+    $phoneTypeValues = civicrm_api('OptionValue', 'get', array(
+      'version' => 3,
+      'option_group_id' => 35,
+	));
+	// build array phonetype value -> phonetype name
+	$phoneTypes = array();
+	if(!empty($phoneTypeValues['values'])) {
+	  foreach($phoneTypeValues['values'] as $key=>$value) {
+  		$phoneTypes[$value['value']] = $value['name'];
+	  }
+	}
+	// prioritise and single out the most important phonenumber: 1st primary > 2nd phone (not mobile) > 3rd others
+	$phoneNumber = array('priority'=>4);
+	foreach($phoneNumbers as $no) {
+      if($no['is_primary']=='1') {
+        $no['priority'] = 1;
+      } else {
+	    $type_id = $no['phone_type_id'];
+		if (!array_key_exists($type_id, $phoneTypes)) {
+			$no['priority'] = 3;
+		} elseif ($phoneTypes[$type_id]=='Phone') {
+			$no['priority'] = 2;
+		} else {
+			$no['priority'] = 3;
+		}
+	  }
+	  if ($no['priority']<$phoneNumber['priority']) {
+		$phoneNumber = $no;
+	  }
+	}
+	return($phoneNumber);
   }
   
   private function workAddressToken(&$values, $cids, $token) {
