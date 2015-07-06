@@ -30,6 +30,8 @@ class CRM_Tokens_Config_PassportInfo {
     $this->passport_valid = civicrm_api3('CustomField', 'getsingle', array('name' => 'Passport_Valid_until', 'custom_group_id' => $passport_info['id']));
     $this->partner_name = civicrm_api3('CustomField', 'getsingle', array('name' => 'Passport_Name_Partner_Last_Name', 'custom_group_id' => $passport_info['id']));
     $this->nationality = civicrm_api3('CustomField', 'getsingle', array('name' => 'Nationality', 'custom_group_id' => $nationality_group['id']));
+	$this->passport_issue_date = civicrm_api3('CustomField', 'getsingle', array('name' => 'Passport_Issue_Date', 'custom_group_id' => $passport_info['id']));
+	$this->passport_issue_place = civicrm_api3('CustomField', 'getsingle', array('name' => 'Passport_Place_of_Issue', 'custom_group_id' => $passport_info['id']));
   }
 
 

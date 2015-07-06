@@ -62,6 +62,8 @@ class CRM_Tokens_CaseRelationship {
     $t[$this->token_name.'.passport_last_name'] = ts('Passport lastname of '.$this->token_label);
     $t[$this->token_name.'.passport_number'] = ts('Passport number of '.$this->token_label);
     $t[$this->token_name.'.passport_valid'] = ts('Passport valid date of '.$this->token_label);
+	$t[$this->token_name.'.passport_issue_date'] = ts('Passport issue date of '.$this->token_label);
+	$t[$this->token_name.'.passport_issue_place'] = ts('Passport issue place of '.$this->token_label);
     $t[$this->token_name.'.passport_partner_name'] = ts('Passport partner name of '.$this->token_label);
     $t[$this->token_name.'.nationlity'] = ts('Nationality of '.$this->token_label);
     $t[$this->token_name.'.prefix'] = ts('Prefix of '.$this->token_label);
@@ -125,6 +127,12 @@ class CRM_Tokens_CaseRelationship {
     }
     if ($this->checkToken($tokens, 'passport_valid')) {
       $this->passportValid($values, $cids, 'passport_valid');
+    }
+	if ($this->checkToken($tokens, 'passport_issue_date')) {
+      $this->passportIssueDate($values, $cids, 'passport_issue_date');
+    }
+	if ($this->checkToken($tokens, 'passport_issue_place')) {
+      $this->passportIssuePlace($values, $cids, 'passport_issue_place');
     }
     if ($this->checkToken($tokens, 'passport_partner_name')) {
       $this->passportPartnerName($values, $cids, 'passport_partner_name');
@@ -213,7 +221,33 @@ class CRM_Tokens_CaseRelationship {
       $values[$cid][$this->token_name.'.'.$token] = $valid;
     }
   }
-
+  
+  private function passportIssueDate(&$values, $cids, $token) {
+    $passport = CRM_Tokens_Config_PassportInfo::singleton();
+    $issued = '';
+    if ($this->contact_id) {
+      $passport_issued = civicrm_api3('Contact', 'getvalue', array('return' => 'custom_'.$passport->passport_issue_date['id'], 'id' => $this->contact_id));
+      if ($passport_issued) {
+        $validDate = new DateTime($passport_issued);
+        $issued = $validDate->format('Y-m-d');
+      }
+    }
+    foreach($cids as $cid) {
+      $values[$cid][$this->token_name.'.'.$token] = $issued;
+    }
+  }
+  
+  private function passportIssuePlace(&$values, $cids, $token) {
+    $passport = CRM_Tokens_Config_PassportInfo::singleton();
+    $issued = '';
+    if ($this->contact_id) {
+      $issued = civicrm_api3('Contact', 'getvalue', array('return' => 'custom_'.$passport->passport_issue_place['id'], 'id' => $this->contact_id));
+    }
+    foreach($cids as $cid) {
+      $values[$cid][$this->token_name.'.'.$token] = $issued;
+    }
+  }
+  
   private function birthDate(&$values, $cids, $token) {
     $formated_birth_date = '';
     if ($this->contact_id) {
