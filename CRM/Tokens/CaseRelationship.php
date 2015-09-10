@@ -13,12 +13,16 @@ class CRM_Tokens_CaseRelationship {
   protected $contact_id = false;
 
   protected $location_types = array();
+  
+  protected $salutations;
+  
+  protected $gender;
 
   public function __construct($relationship_type_name_a_b, $token_name, $token_label, $case_id = null) {
     $this->token_name = $token_name;
     $this->token_label = $token_label;
     $this->relationship_type = civicrm_api3('RelationshipType', 'getsingle', array('name_a_b' => $relationship_type_name_a_b));
-
+	
     if (empty($case_id)) {
       $this->case_id = CRM_Tokens_CaseId::getCaseId();
     } elseif($case_id=='parent') {
@@ -41,8 +45,65 @@ class CRM_Tokens_CaseRelationship {
     foreach($locTypes['values'] as $locType) {
       $this->location_types[$locType['name']] = $locType['id'];
     }
+    
+    $this->get_salutations();
+    $this->get_gender();
   }
-
+  
+  private function get_salutations() {
+	$salutations = array();
+	
+	try {
+		$params = array(
+		  'version' => 3,
+		  'sequential' => 1,
+		  'option_group_name' => 'tokens_salutation',
+		);
+		
+		$result = civicrm_api('OptionValue', 'get', $params);
+		
+		foreach ($result['values'] as $key => $value) {
+			$v = explode('_',$value['name']);	//$v[0] = "mrs" $v[1]=en
+			 
+			if (!array_key_exists($v[1],$salutations)) {
+				$salutations[$v[1]] = array();	
+			}
+			
+			$salutations[$v[1]][$v[0]] = $value['value'];	
+		}		
+	} catch (Exception $e) {
+	
+	}
+	
+	$this->salutations = $salutations;
+  }
+  
+  private function get_gender() {
+	$gender = array();
+	
+	try {
+		$params = array(
+		  'version' => 3,
+		  'sequential' => 1,
+		  'option_group_name' => 'gender',
+		);
+		
+		$result = civicrm_api('OptionValue', 'get', $params);
+		
+		foreach ($result['values'] as $key => $value) {
+			if ($value['name'] == 'Male') {
+				$gender[$value['value']] = "mr";
+			} elseif ($value['name'] == 'Female') {
+				$gender[$value['value']] = "mrs";
+			}	
+		}		
+	} catch (Exception $e) {
+	
+	}
+	
+	$this->gender = $gender;
+  }
+  
   public function tokens(&$tokens) {
     $t = array();
     $t[$this->token_name.'.address'] = ts('Address of '.$this->token_label);
@@ -73,7 +134,13 @@ class CRM_Tokens_CaseRelationship {
     $t[$this->token_name.'.birth_date'] = ts('Birth date of '.$this->token_label);
     $t[$this->token_name.'.age'] = ts('Age of '.$this->token_label);
 	$t[$this->token_name.'.home_phone'] = ts('Home phone number of '.$this->token_label);
+	if (!empty($this->salutations)) {
+		foreach ($this->salutations as $key => $value) {
+			$t[$this->token_name.'.salutation_'.$key] = ts('Salutation ('.$key.') for '.$this->token_label);		
+		}
+	}
     $tokens[$this->token_name] = $t;
+    
   }
 
   public function tokenValues(&$values, $cids, $job = null, $tokens = array(), $context = null) {
@@ -161,8 +228,18 @@ class CRM_Tokens_CaseRelationship {
 	if ($this->checkToken($tokens, 'home_phone')) {
       $this->homePhoneToken($values, $cids, 'home_phone');
     }
+    
+    if (!empty($this->salutations)) {
+		foreach ($this->salutations as $key => $value) {
+			if ($this->checkToken($tokens, 'salutation_'.$key)) {
+				$this->saluationToken($values, $cids, 'salutation_'.$key, $key);
+			}		
+		}
+	}
+    
   }
 
+  
   private function passportFirstName(&$values, $cids, $token) {
     $passport = CRM_Tokens_Config_PassportInfo::singleton();
     $name = '';
@@ -642,6 +719,50 @@ class CRM_Tokens_CaseRelationship {
     }
   }
 
+  private function saluationToken(&$values, $cids, $token, $lang) {
+    /**
+	 *	$lang = 'en' | 'fr' | 'es' | 'nl' | ... (option group 'tokens_salutation')
+	 *	$this->salutations = array(
+	 *		'en' = array(
+	 *			'mr' => 'Mr.,
+	 *			'mrs' = 'Mrs.,
+	 *		),
+	 *		'fr' = array(
+	 *			'mr' => 'M.',
+	 *			'mrs' => 'Mme.',
+	 *		),
+	 *		...
+	 *	)
+	 *	$this->gender = array(
+	 *		1 => 'mrs',
+	 *		2 => 'mr',
+	 *	) // (option group 'gender')
+	 */
+	
+  	if ($this->contact_id) {
+	  	$params = array(
+		  'version' => 3,
+		  'sequential' => 1,
+		  'contact_id' => $this->contact_id,
+		);
+		$result = civicrm_api('Contact', 'get', $params);
+
+		$prefix = 'mr';
+		if (!empty($result['values'][0]['gender_id'])) {
+			$gender_id = $result['values'][0]['gender_id'];
+
+			if (array_key_exists($gender_id, $this->gender)) {
+				$prefix = $this->gender[$gender_id]; 
+			}
+		}
+
+		foreach($cids as $cid) {
+      		$values[$cid][$this->token_name.'.'.$token] = $this->salutations[$lang][$prefix];
+    	}
+
+	}
+  }
+  
   /**
    * Returns true when token in set in the tokens array
    *
