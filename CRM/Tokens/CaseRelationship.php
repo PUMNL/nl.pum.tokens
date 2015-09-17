@@ -50,7 +50,7 @@ class CRM_Tokens_CaseRelationship {
     $this->get_gender();
   }
   
-  private function get_salutations() {
+  protected function get_salutations() {
 	$salutations = array();
 	
 	try {
@@ -78,7 +78,7 @@ class CRM_Tokens_CaseRelationship {
 	$this->salutations = $salutations;
   }
   
-  private function get_gender() {
+  protected function get_gender() {
 	$gender = array();
 	
 	try {

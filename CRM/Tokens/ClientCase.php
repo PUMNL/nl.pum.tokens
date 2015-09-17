@@ -25,6 +25,9 @@ class CRM_Tokens_ClientCase extends CRM_Tokens_CaseRelationship {
     } catch (Exception $e) {
       //do nothing
     }
+	
+	$this->get_salutations();
+    $this->get_gender();
   }
 
 }
