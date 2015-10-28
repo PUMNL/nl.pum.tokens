@@ -16,6 +16,8 @@ class CRM_Tokens_CaseRelationship {
   
   protected $salutations;
   
+  protected $salutations_greeting;
+  
   protected $gender;
 
   public function __construct($relationship_type_name_a_b, $token_name, $token_label, $case_id = null) {
@@ -48,6 +50,7 @@ class CRM_Tokens_CaseRelationship {
     
     $this->get_salutations();
     $this->get_gender();
+    $this->get_salutations_greeting();
   }
   
   protected function get_salutations() {
@@ -76,6 +79,34 @@ class CRM_Tokens_CaseRelationship {
 	}
 	
 	$this->salutations = $salutations;
+  }
+  
+  protected function get_salutations_greeting() {
+	$salutations_greeting = array();
+	
+	try {
+		$params = array(
+		  'version' => 3,
+		  'sequential' => 1,
+		  'option_group_name' => 'tokens_salutation_greeting',
+		);
+		
+		$result = civicrm_api('OptionValue', 'get', $params);
+		
+		foreach ($result['values'] as $key => $value) {
+			$v = explode('_',$value['name']);	//$v[0] = "mrs" $v[1]=en
+			 
+			if (!array_key_exists($v[1],$salutations_greeting)) {
+				$salutations_greeting[$v[1]] = array();	
+			}
+			
+			$salutations_greeting[$v[1]][$v[0]] = $value['value'];	
+		}		
+	} catch (Exception $e) {
+	
+	}
+	
+	$this->salutations_greeting = $salutations_greeting;
   }
   
   protected function get_gender() {
@@ -139,8 +170,14 @@ class CRM_Tokens_CaseRelationship {
 			$t[$this->token_name.'.salutation_'.$key] = ts('Salutation ('.$key.') for '.$this->token_label);		
 		}
 	}
-    $tokens[$this->token_name] = $t;
+
+	if (!empty($this->salutations_greeting)) {
+		foreach ($this->salutations_greeting as $key => $value) {
+			$t[$this->token_name.'.salutationgreeting_'.$key] = ts('Salutation Greeting ('.$key.') for '.$this->token_label);		
+		}
+	}
     
+	$tokens[$this->token_name] = $t;
   }
 
   public function tokenValues(&$values, $cids, $job = null, $tokens = array(), $context = null) {
@@ -232,11 +269,18 @@ class CRM_Tokens_CaseRelationship {
     if (!empty($this->salutations)) {
 		foreach ($this->salutations as $key => $value) {
 			if ($this->checkToken($tokens, 'salutation_'.$key)) {
-				$this->saluationToken($values, $cids, 'salutation_'.$key, $key);
+				$this->salutationToken($values, $cids, 'salutation_'.$key, $key);
 			}		
 		}
 	}
     
+    if (!empty($this->salutations_greeting)) {
+		foreach ($this->salutations_greeting as $key => $value) {
+			if ($this->checkToken($tokens, 'salutationgreeting_'.$key)) {
+				$this->salutationgreetingToken($values, $cids, 'salutationgreeting_'.$key, $key);
+			}		
+		}
+	}
   }
 
   
@@ -719,7 +763,7 @@ class CRM_Tokens_CaseRelationship {
     }
   }
 
-  private function saluationToken(&$values, $cids, $token, $lang) {
+  private function salutationToken(&$values, $cids, $token, $lang) {
     /**
 	 *	$lang = 'en' | 'fr' | 'es' | 'nl' | ... (option group 'tokens_salutation')
 	 *	$this->salutations = array(
@@ -758,6 +802,50 @@ class CRM_Tokens_CaseRelationship {
 
 		foreach($cids as $cid) {
       		$values[$cid][$this->token_name.'.'.$token] = $this->salutations[$lang][$prefix];
+    	}
+
+	}
+  }
+  
+  private function salutationgreetingToken(&$values, $cids, $token, $lang) {
+    /**
+	 *	$lang = 'en' | 'fr' | 'es' | 'nl' | ... (option group 'tokens_salutations_greeting')
+	 *	$this->salutations = array(
+	 *		'en' = array(
+	 *			'mr' => 'Dear,
+	 *			'mrs' = 'Dear,
+	 *		),
+	 *		'es' = array(
+	 *			'mr' => 'Estimado',
+	 *			'mrs' => 'Estimada',
+	 *		),
+	 *		...
+	 *	)
+	 *	$this->gender = array(
+	 *		1 => 'mrs',
+	 *		2 => 'mr',
+	 *	) // (option group 'gender')
+	 */
+	
+  	if ($this->contact_id) {
+	  	$params = array(
+		  'version' => 3,
+		  'sequential' => 1,
+		  'contact_id' => $this->contact_id,
+		);
+		$result = civicrm_api('Contact', 'get', $params);
+
+		$prefix = 'mr';
+		if (!empty($result['values'][0]['gender_id'])) {
+			$gender_id = $result['values'][0]['gender_id'];
+
+			if (array_key_exists($gender_id, $this->gender)) {
+				$prefix = $this->gender[$gender_id]; 
+			}
+		}
+
+		foreach($cids as $cid) {
+      		$values[$cid][$this->token_name.'.'.$token] = $this->salutations_greeting[$lang][$prefix];
     	}
 
 	}

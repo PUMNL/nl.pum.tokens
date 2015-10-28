@@ -27,6 +27,7 @@ class CRM_Tokens_ClientCase extends CRM_Tokens_CaseRelationship {
     }
 	
 	$this->get_salutations();
+	$this->get_salutations_greeting();
     $this->get_gender();
   }
 

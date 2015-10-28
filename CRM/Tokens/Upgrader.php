@@ -115,9 +115,16 @@ class CRM_Tokens_Upgrader extends CRM_Tokens_Upgrader_Base {
   } // */
 
 	public function upgrade_1001() {
-	    $this->ctx->log->info('Applying update 1001');
-	    // this path is relative to the extension base dir
-	    Tokens_OptionGroup::install();
-	    return TRUE;
-	  } // */
+		$this->ctx->log->info('Applying update 1001');
+		// this path is relative to the extension base dir
+		Tokens_OptionGroup::install();
+		return TRUE;
+	}
+	
+	public function upgrade_1002() {
+		$this->ctx->log->info('Applying update 1002');
+		// this path is relative to the extension base dir
+		Tokens_OptionGroup::install();
+		return TRUE;
+	}
 }
