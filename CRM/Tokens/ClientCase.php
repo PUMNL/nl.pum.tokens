@@ -23,12 +23,13 @@ class CRM_Tokens_ClientCase extends CRM_Tokens_CaseRelationship {
         $this->contact_id = reset($this->contact_id);
       }
     } catch (Exception $e) {
-      //do nothing
+      CRM_Core_Error::debug_log_message($e->getCode() & " - " & $e->getMessage(), FALSE);
     }
 	
+	$this->get_gender();
 	$this->get_salutations();
+	$this->get_salutations_full();
 	$this->get_salutations_greeting();
-    $this->get_gender();
   }
 
 }

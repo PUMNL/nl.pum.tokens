@@ -16,6 +16,8 @@ class CRM_Tokens_CaseRelationship {
   
   protected $salutations;
   
+  protected $salutations_full;
+  
   protected $salutations_greeting;
   
   protected $gender;
@@ -48,8 +50,9 @@ class CRM_Tokens_CaseRelationship {
       $this->location_types[$locType['name']] = $locType['id'];
     }
     
-    $this->get_salutations();
     $this->get_gender();
+    $this->get_salutations();
+    $this->get_salutations_full();
     $this->get_salutations_greeting();
   }
   
@@ -79,6 +82,34 @@ class CRM_Tokens_CaseRelationship {
 	}
 	
 	$this->salutations = $salutations;
+  }
+  
+  protected function get_salutations_full() {
+	$salutations_full = array();
+	
+	try {
+		$params = array(
+		  'version' => 3,
+		  'sequential' => 1,
+		  'option_group_name' => 'tokens_salutation_full',
+		);
+		
+		$result = civicrm_api('OptionValue', 'get', $params);
+		
+		foreach ($result['values'] as $key => $value) {
+			$v = explode('_',$value['name']);	//$v[0] = "mrs" $v[1]=en
+			 
+			if (!array_key_exists($v[1],$salutations_full)) {
+				$salutations_full[$v[1]] = array();	
+			}
+			
+			$salutations_full[$v[1]][$v[0]] = $value['value'];	
+		}		
+	} catch (Exception $e) {
+	
+	}
+	
+	$this->salutations_full = $salutations_full;
   }
   
   protected function get_salutations_greeting() {
@@ -171,6 +202,12 @@ class CRM_Tokens_CaseRelationship {
 		}
 	}
 
+	if (!empty($this->salutations_full)) {
+		foreach ($this->salutations_full as $key => $value) {
+			$t[$this->token_name.'.salutationfull_'.$key] = ts('Salutation Full ('.$key.') for '.$this->token_label);		
+		}
+	}
+	
 	if (!empty($this->salutations_greeting)) {
 		foreach ($this->salutations_greeting as $key => $value) {
 			$t[$this->token_name.'.salutationgreeting_'.$key] = ts('Salutation Greeting ('.$key.') for '.$this->token_label);		
@@ -274,6 +311,14 @@ class CRM_Tokens_CaseRelationship {
 		}
 	}
     
+    if (!empty($this->salutations_full)) {
+		foreach ($this->salutations_full as $key => $value) {
+			if ($this->checkToken($tokens, 'salutationfull_'.$key)) {
+				$this->salutationFullToken($values, $cids, 'salutationfull_'.$key, $key);
+			}		
+		}
+	}
+	
     if (!empty($this->salutations_greeting)) {
 		foreach ($this->salutations_greeting as $key => $value) {
 			if ($this->checkToken($tokens, 'salutationgreeting_'.$key)) {
@@ -802,6 +847,50 @@ class CRM_Tokens_CaseRelationship {
 
 		foreach($cids as $cid) {
       		$values[$cid][$this->token_name.'.'.$token] = $this->salutations[$lang][$prefix];
+    	}
+
+	}
+  }
+  
+  private function salutationFullToken(&$values, $cids, $token, $lang) {
+    /**
+	 *	$lang = 'en' | 'fr' | 'es' | 'nl' | ... (option group 'tokens_salutation_full')
+	 *	$this->salutations = array(
+	 *		'en' = array(
+	 *			'mr' => 'sir',
+	 *			'mrs' = 'madame',
+	 *		),
+	 *		'fr' = array(
+	 *			'mr' => 'monsieur',
+	 *			'mrs' => 'madame',
+	 *		),
+	 *		...
+	 *	)
+	 *	$this->gender = array(
+	 *		1 => 'mrs',
+	 *		2 => 'mr',
+	 *	) // (option group 'gender')
+	 */
+	
+  	if ($this->contact_id) {
+	  	$params = array(
+		  'version' => 3,
+		  'sequential' => 1,
+		  'contact_id' => $this->contact_id,
+		);
+		$result = civicrm_api('Contact', 'get', $params);
+
+		$prefix = 'mr';
+		if (!empty($result['values'][0]['gender_id'])) {
+			$gender_id = $result['values'][0]['gender_id'];
+
+			if (array_key_exists($gender_id, $this->gender)) {
+				$prefix = $this->gender[$gender_id]; 
+			}
+		}
+
+		foreach($cids as $cid) {
+      		$values[$cid][$this->token_name.'.'.$token] = $this->salutations_full[$lang][$prefix];
     	}
 
 	}
