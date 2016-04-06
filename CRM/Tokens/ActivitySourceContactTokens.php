@@ -46,9 +46,9 @@ class CRM_Tokens_ActivitySourceContactTokens {
         ));
       }
       if (!is_array($cids)) {
-        $values[$this->token_name . '.' . $token] = $name;
+        $values[$this->token_name . '.' . $token] = $prefix;
       } else {
-        $values[$cid][$this->token_name . '.' . $token] = $name;
+        $values[$cid][$this->token_name . '.' . $token] = $prefix;
       }
     }
   }
