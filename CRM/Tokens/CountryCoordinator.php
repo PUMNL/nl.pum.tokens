@@ -9,9 +9,7 @@ class CRM_Tokens_CountryCoordinator extends CRM_Tokens_CaseRelationship {
 
   public function tokenValues(&$values, $cids, $job = null, $tokens = array(), $context = null) {
     parent::tokenValues($values, $cids, $job, $tokens, $context);
-    if ($this->checkToken($tokens, 'country')) {
-      $this->countryToken($values, $cids, 'country');
-    }
+    $this->countryToken($values, $cids, 'country');
   }
 
   private function countryToken(&$values, $cids, $token) {
@@ -39,9 +37,7 @@ class CRM_Tokens_CountryCoordinator extends CRM_Tokens_CaseRelationship {
       }
     }
 
-    foreach($cids as $cid) {
-      $values[$cid][$this->token_name.'.'.$token] = $country;
-    }
+    $this->setTokenValue($values, $cids, $token, $country);
   }
 
 }

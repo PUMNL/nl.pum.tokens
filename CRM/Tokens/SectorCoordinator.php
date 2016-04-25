@@ -9,9 +9,7 @@ class CRM_Tokens_SectorCoordinator extends CRM_Tokens_CaseRelationship {
 
   public function tokenValues(&$values, $cids, $job = null, $tokens = array(), $context = null) {
     parent::tokenValues($values, $cids, $job, $tokens, $context);
-    if ($this->checkToken($tokens, 'sector')) {
-      $this->sectorToken($values, $cids, 'sector');
-    }
+    $this->sectorToken($values, $cids, 'sector');
   }
 
   private function sectorToken(&$values, $cids, $token) {
@@ -34,9 +32,7 @@ class CRM_Tokens_SectorCoordinator extends CRM_Tokens_CaseRelationship {
       }
     }
 
-    foreach($cids as $cid) {
-      $values[$cid][$this->token_name.'.'.$token] = $sector;
-    }
+    $this->setTokenValue($values, $cids, $token, $sector);
   }
 
 }

@@ -95,6 +95,13 @@ function tokens_civicrm_tokens(&$tokens) {
 }
 
 function tokens_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = array(), $context = null) {
+  /* Set case ID. This done by retrieving the activity ID from the $values array.
+   * The activity_id is present ins the $values array when the tokens are rendered from
+   * a scheduled reminder.
+   */
+  CRM_Tokens_CaseId::getCaseIdFromTokenValues($values, $cids);
+
+
   // current case tokens
   
   $client_tokens = new CRM_Tokens_ClientCase('client', 'Client');

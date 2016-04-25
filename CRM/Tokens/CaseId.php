@@ -40,8 +40,29 @@ class CRM_Tokens_CaseId {
         return self::$caseId;
     }
 	
-	public static function getParentCaseId() {
+	  public static function getParentCaseId() {
         return self::$parentCaseId;
+    }
+
+    public static function getCaseIdFromTokenValues($values, $cids) {
+        if (!empty(self::$caseId)) {
+            return;
+        }
+
+        $activity_id = false;
+        if (!is_array($cids) && isset($values['activity.activity_id'])) {
+            $activity_id = $values['activity.activity_id'];
+        } elseif (is_array($cids)) {
+            $cid = reset($cids);
+            if (isset($values[$cid]['activity.activity_id'])) {
+                $activity_id = $values[$cid]['activity.activity_id'];
+            }
+        }
+
+        if ($activity_id) {
+            self::$caseId = CRM_Core_DAO::singleValueQuery("SELECT case_id FROM civicrm_case_activity WHERE activity_id = %1", array(1=>array($activity_id, 'Integer')));
+            self::$parentCaseId = self::fetchParentCaseId(self::$caseId);
+        }
     }
 
 	public static function fetchParentCaseId($childCaseId) {
