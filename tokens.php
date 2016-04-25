@@ -85,6 +85,12 @@ function tokens_civicrm_tokens(&$tokens) {
   $grant_coordinator_tokens = new CRM_Tokens_CaseRelationship('Grant Coordinator', 'grant_coordinator', 'Grant Coordinator');
   $grant_coordinator_tokens->tokens($tokens);
 
+  $business_coordinator_tokens = new CRM_Tokens_CaseRelationship('Business Coordinator', 'business_coordinator', 'Business Coordinator');
+  $business_coordinator_tokens->tokens($tokens);
+  
+  $parent_business_coordinator_tokens = new CRM_Tokens_CaseRelationship('Business Coordinator', 'parent_business_coordinator', 'Parent Business Coordinator', 'parent');
+  $parent_business_coordinator_tokens->tokens($tokens);
+  
   // misc
   $info_tokens = new CRM_Tokens_SysInfo('server', 'Server');
   $info_tokens->tokens($tokens);
@@ -178,6 +184,12 @@ function tokens_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = arra
   $grant_coordinator_tokens = new CRM_Tokens_CaseRelationship('Grant Coordinator', 'grant_coordinator', 'Grant Coordinator');
   $grant_coordinator_tokens->tokenValues($values, $cids, $job, $tokens, $context);
   
+  $business_coordinator_tokens = new CRM_Tokens_CaseRelationship('Business Coordinator', 'business_coordinator', 'Business Coordinator');
+  $business_coordinator_tokens->tokenValues($values, $cids, $job, $tokens, $context);
+  
+  $parent_business_coordinator_tokens = new CRM_Tokens_CaseRelationship('Business Coordinator', 'parent_business_coordinator', 'Parent Business Coordinator', 'parent');
+  $parent_business_coordinator_tokens->tokenValues($values, $cids, $job, $tokens, $context);
+    
   // misc
   $info_tokens = new CRM_Tokens_SysInfo('server', 'Server');
   $info_tokens->tokenValues($values, $cids, $job, $tokens, $context);

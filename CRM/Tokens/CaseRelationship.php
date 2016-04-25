@@ -14,6 +14,8 @@ class CRM_Tokens_CaseRelationship {
 
   protected $location_types = array();
 
+  protected $phone_types = array();
+
   protected $salutations;
 
   protected $salutations_full;
@@ -50,6 +52,16 @@ class CRM_Tokens_CaseRelationship {
     $locTypes = civicrm_api3('LocationType', 'get', array());
     foreach ($locTypes['values'] as $locType) {
       $this->location_types[$locType['name']] = $locType['id'];
+    }
+
+    $phoneTypes = civicrm_api3('OptionValue', 'get', array(
+        'version' => 3,
+        'sequential' => 1,
+        'option_group_name' => 'phone_type'
+      )
+    );
+    foreach ($phoneTypes['values'] as $phoneType) {
+      $this->phone_types[$phoneType['name']] = $phoneType['value'];
     }
 
     $this->get_gender();
@@ -181,9 +193,18 @@ class CRM_Tokens_CaseRelationship {
     $t[$this->token_name . '.work_postalcode'] = ts('Work address postalcode of ' . $this->token_label);
     $t[$this->token_name . '.work_city'] = ts('Work address city of ' . $this->token_label);
     $t[$this->token_name . '.work_country'] = ts('Work address country of ' . $this->token_label);
+    $t[$this->token_name . '.primary_phone'] = ts('Primary phone number of ' . $this->token_label);
+    $t[$this->token_name . '.home_phone'] = ts('Home phone number of ' . $this->token_label);
+    $t[$this->token_name . '.home_mobile'] = ts('Home mobile number of ' . $this->token_label);
+    $t[$this->token_name . '.home_fax'] = ts('Home fax number of ' . $this->token_label);
+    $t[$this->token_name . '.work_phone'] = ts('Work phone number of ' . $this->token_label);
+    $t[$this->token_name . '.work_mobile'] = ts('Work mobile number of ' . $this->token_label);
+    $t[$this->token_name . '.work_fax'] = ts('Work fax number of ' . $this->token_label);
+    $t[$this->token_name . '.main_phone'] = ts('Main phone number of ' . $this->token_label);
+    $t[$this->token_name . '.main_mobile'] = ts('Main mobile number of ' . $this->token_label);
+    $t[$this->token_name . '.main_fax'] = ts('Main fax number of ' . $this->token_label);
     $t[$this->token_name . '.display_name'] = ts('Display name of ' . $this->token_label);
     $t[$this->token_name . '.email'] = ts('E-mail address of ' . $this->token_label);
-    $t[$this->token_name . '.work_phone'] = ts('Work phone number of ' . $this->token_label);
     $t[$this->token_name . '.passport_first_name'] = ts('Passport firstname of ' . $this->token_label);
     $t[$this->token_name . '.passport_last_name'] = ts('Passport lastname of ' . $this->token_label);
     $t[$this->token_name . '.passport_number'] = ts('Passport number of ' . $this->token_label);
@@ -198,7 +219,7 @@ class CRM_Tokens_CaseRelationship {
     $t[$this->token_name . '.last_name'] = ts('Last name of ' . $this->token_label);
     $t[$this->token_name . '.birth_date'] = ts('Birth date of ' . $this->token_label);
     $t[$this->token_name . '.age'] = ts('Age of ' . $this->token_label);
-    $t[$this->token_name . '.home_phone'] = ts('Home phone number of ' . $this->token_label);
+
     if (!empty($this->salutations)) {
       foreach ($this->salutations as $key => $value) {
         $t[$this->token_name . '.salutation_' . $key] = ts('Salutation (' . $key . ') for ' . $this->token_label);
@@ -249,6 +270,14 @@ class CRM_Tokens_CaseRelationship {
     $this->birthDate($values, $cids, 'birth_date');
     $this->age($values, $cids, 'age');
     $this->homePhoneToken($values, $cids, 'home_phone');
+    $this->homeMobileToken($values, $cids, 'home_mobile');
+    $this->homeFaxToken($values, $cids, 'home_fax');
+    $this->workMobileToken($values, $cids, 'work_mobile');
+    $this->workFaxToken($values, $cids, 'work_fax');
+    $this->mainPhoneToken($values, $cids, 'main_phone');
+    $this->mainMobileToken($values, $cids, 'main_mobile');
+    $this->mainFaxToken($values, $cids, 'main_fax');
+    $this->primaryPhoneToken($values, $cids, 'primary_phone');
 
     if (!empty($this->salutations)) {
       foreach ($this->salutations as $key => $value) {
@@ -268,7 +297,6 @@ class CRM_Tokens_CaseRelationship {
       }
     }
   }
-
 
   private function passportFirstName(&$values, $cids, $token) {
     $passport = CRM_Tokens_Config_PassportInfo::singleton();
@@ -456,17 +484,16 @@ class CRM_Tokens_CaseRelationship {
         'id' => $this->contact_id
       ));
     }
-    foreach ($cids as $cid) {
-      $values[$cid][$this->token_name . '.' . $token] = $name;
-    }
+    $this->setTokenValue($values, $cids, $token, $name);
   }
 
   private function homePhoneToken(&$values, $cids, $token) {
     $tokenValue = '';
-    if ($this->contact_id) {
+    if ($this->contact_id && isset($this->location_types['Home']) && isset($this->phone_types['Phone'])) {
       $phoneNumber = civicrm_api('Phone', 'get', array(
         'contact_id' => $this->contact_id,
         'location_type_id' => $this->location_types['Home'],
+        'phone_type_id' => $this->phone_types['Phone'],
         'version' => 3,
       ));
 
@@ -476,17 +503,60 @@ class CRM_Tokens_CaseRelationship {
           $tokenValue = $phoneFilter['phone'];
         }
       }
-    }
 
-    $this->setTokenValue($values, $cids, $token, $tokenValue);
+      $this->setTokenValue($values, $cids, $token, $tokenValue);
+    }
+  }
+
+  private function homeMobileToken(&$values, $cids, $token) {
+    $phone = '';
+    if ($this->contact_id && isset($this->location_types['Home']) && isset($this->phone_types['Mobile'])) {
+      $phoneNumber = civicrm_api('Phone', 'get', array(
+        'contact_id' => $this->contact_id,
+        'location_type_id' => $this->location_types['Home'],
+        'phone_type_id' => $this->phone_types['Mobile'],
+        'version' => 3,
+      ));
+
+      if (!empty($phoneNumber['values'])) {
+        $phoneFilter = $this->phoneFilter($phoneNumber['values']);
+        if (!empty($phoneFilter['phone'])) {
+          $tokenValue = $phoneFilter['phone'];
+        }
+      }
+
+      $this->setTokenValue($values, $cids, $token, $phone);
+    }
+  }
+
+  private function homeFaxToken(&$values, $cids, $token) {
+    $phone = '';
+    if ($this->contact_id && isset($this->location_types['Home']) && isset($this->phone_types['Fax'])) {
+      $phoneNumber = civicrm_api('Phone', 'get', array(
+        'contact_id' => $this->contact_id,
+        'location_type_id' => $this->location_types['Home'],
+        'phone_type_id' => $this->phone_types['Fax'],
+        'version' => 3,
+      ));
+
+      if (!empty($phoneNumber['values'])) {
+        $phoneFilter = $this->phoneFilter($phoneNumber['values']);
+        if (!empty($phoneFilter['phone'])) {
+          $phone = $phoneFilter['phone'];
+        }
+      }
+
+      $this->setTokenValue($values, $cids, $token, $phone);
+    }
   }
 
   private function workPhoneToken(&$values, $cids, $token) {
     $tokenValue = '';
-    if ($this->contact_id) {
+    if ($this->contact_id && isset($this->location_types['Work']) && isset($this->phone_types['Phone'])) {
       $phoneNumber = civicrm_api('Phone', 'get', array(
         'contact_id' => $this->contact_id,
         'location_type_id' => $this->location_types['Work'],
+        'phone_type_id' => $this->phone_types['Phone'],
         'version' => 3,
       ));
 
@@ -496,10 +566,135 @@ class CRM_Tokens_CaseRelationship {
           $tokenValue = $phoneFilter['phone'];
         }
       }
-    }
 
-    $this->setTokenValue($values, $cids, $token, $tokenValue);
+      $this->setTokenValue($values, $cids, $token, $tokenValue);
+    }
   }
+
+  private function workMobileToken(&$values, $cids, $token) {
+    $phone = '';
+    if ($this->contact_id && isset($this->location_types['Work']) && isset($this->phone_types['Mobile'])) {
+      $phoneNumber = civicrm_api('Phone', 'get', array(
+        'contact_id' => $this->contact_id,
+        'location_type_id' => $this->location_types['Work'],
+        'phone_type_id' => $this->phone_types['Mobile'],
+        'version' => 3,
+      ));
+      if (!empty($phoneNumber['values'])) {
+        $phoneFilter = $this->phoneFilter($phoneNumber['values']);
+        if (!empty($phoneFilter['phone'])) {
+          $phone = $phoneFilter['phone'];
+        }
+      }
+
+      $this->setTokenValue($values, $cids, $token, $phone);
+    }
+  }
+
+  private function workFaxToken(&$values, $cids, $token) {
+    $phone = '';
+    if ($this->contact_id && isset($this->location_types['Work']) && isset($this->phone_types['Fax'])) {
+      $phoneNumber = civicrm_api('Phone', 'get', array(
+        'contact_id' => $this->contact_id,
+        'location_type_id' => $this->location_types['Work'],
+        'phone_type_id' => $this->phone_types['Fax'],
+        'version' => 3,
+      ));
+
+      if (!empty($phoneNumber['values'])) {
+        $phoneFilter = $this->phoneFilter($phoneNumber['values']);
+        if (!empty($phoneFilter['phone'])) {
+          $phone = $phoneFilter['phone'];
+        }
+      }
+
+      $this->setTokenValue($values, $cids, $token, $phone);
+    }
+  }
+
+  private function mainPhoneToken(&$values, $cids, $token) {
+    $phone = '';
+    if ($this->contact_id && isset($this->location_types['Main']) && isset($this->phone_types['Phone'])) {
+      $phoneNumber = civicrm_api('Phone', 'get', array(
+        'contact_id' => $this->contact_id,
+        'location_type_id' => $this->location_types['Main'],
+        'phone_type_id' => $this->phone_types['Phone'],
+        'version' => 3,
+      ));
+
+      if (!empty($phoneNumber['values'])) {
+        $phoneFilter = $this->phoneFilter($phoneNumber['values']);
+        if (!empty($phoneFilter['phone'])) {
+          $phone = $phoneFilter['phone'];
+        }
+      }
+
+      $this->setTokenValue($values, $cids, $token, $phone);
+    }
+  }
+
+  private function mainMobileToken(&$values, $cids, $token) {
+    $phone = '';
+    if ($this->contact_id && isset($this->location_types['Main']) && isset($this->phone_types['Mobile'])) {
+      $phoneNumber = civicrm_api('Phone', 'get', array(
+        'contact_id' => $this->contact_id,
+        'location_type_id' => $this->location_types['Main'],
+        'phone_type_id' => $this->phone_types['Mobile'],
+        'version' => 3,
+      ));
+
+      if (!empty($phoneNumber['values'])) {
+        $phoneFilter = $this->phoneFilter($phoneNumber['values']);
+        if (!empty($phoneFilter['phone'])) {
+          $phone = $phoneFilter['phone'];
+        }
+      }
+
+      $this->setTokenValue($values, $cids, $token, $phone);
+    }
+  }
+
+  private function mainFaxToken(&$values, $cids, $token) {
+    $phone = '';
+    if ($this->contact_id && isset($this->location_types['Main']) && isset($this->phone_types['Fax'])) {
+      $phoneNumber = civicrm_api('Phone', 'get', array(
+        'contact_id' => $this->contact_id,
+        'location_type_id' => $this->location_types['Main'],
+        'phone_type_id' => $this->phone_types['Fax'],
+        'version' => 3,
+      ));
+
+      if (!empty($phoneNumber['values'])) {
+        $phoneFilter = $this->phoneFilter($phoneNumber['values']);
+        if (!empty($phoneFilter['phone'])) {
+          $phone = $phoneFilter['phone'];
+        }
+      }
+
+      $this->setTokenValue($values, $cids, $token, $phone);
+    }
+  }
+
+  private function primaryPhoneToken(&$values, $cids, $token) {
+    $phone = '';
+    if ($this->contact_id) {
+      $phoneNumber = civicrm_api('Phone', 'get', array(
+        'contact_id' => $this->contact_id,
+        'is_primary' => 1,
+        'version' => 3,
+      ));
+
+      if (!empty($phoneNumber['values'])) {
+        $phoneFilter = $this->phoneFilter($phoneNumber['values']);
+        if (!empty($phoneFilter['phone'])) {
+          $phone = $phoneFilter['phone'];
+        }
+      }
+
+      $this->setTokenValue($values, $cids, $token, $phone);
+    }
+  }
+
 
   private function phoneFilter($phoneNumbers) {
     $phoneTypeGroupId = civicrm_api('OptionGroup', 'getsingle', array(
@@ -509,7 +704,7 @@ class CRM_Tokens_CaseRelationship {
     ));
     $phoneTypeValues = civicrm_api('OptionValue', 'get', array(
       'version' => 3,
-      'option_group_id' => 35,
+      'option_group_name' => 'phone_type',
     ));
     // build array phonetype value -> phonetype name
     $phoneTypes = array();
@@ -545,7 +740,7 @@ class CRM_Tokens_CaseRelationship {
 
   private function workAddressToken(&$values, $cids, $token) {
     $formatedAddress = '';
-    if ($this->contact_id) {
+    if ($this->contact_id && isset($this->location_types['Work'])) {
       $address = civicrm_api('Address', 'getsingle', array(
         'contact_id' => $this->contact_id,
         'location_type_id' => $this->location_types['Work'],
@@ -568,7 +763,7 @@ class CRM_Tokens_CaseRelationship {
 
   private function workStreetToken(&$values, $cids, $token) {
     $formatedAddress = '';
-    if ($this->contact_id) {
+    if ($this->contact_id && isset($this->location_types['Work'])) {
       $address = civicrm_api('Address', 'getsingle', array(
         'contact_id' => $this->contact_id,
         'location_type_id' => $this->location_types['Work'],
@@ -586,7 +781,7 @@ class CRM_Tokens_CaseRelationship {
 
   private function workPostalCodeToken(&$values, $cids, $token) {
     $formatedAddress = '';
-    if ($this->contact_id) {
+    if ($this->contact_id && isset($this->location_types['Work'])) {
       $address = civicrm_api('Address', 'getsingle', array(
         'contact_id' => $this->contact_id,
         'location_type_id' => $this->location_types['Work'],
@@ -604,7 +799,7 @@ class CRM_Tokens_CaseRelationship {
 
   private function workCityToken(&$values, $cids, $token) {
     $formatedAddress = '';
-    if ($this->contact_id) {
+    if ($this->contact_id && isset($this->location_types['Work'])) {
       $address = civicrm_api('Address', 'getsingle', array(
         'contact_id' => $this->contact_id,
         'location_type_id' => $this->location_types['Work'],
@@ -622,7 +817,7 @@ class CRM_Tokens_CaseRelationship {
 
   private function workCountryToken(&$values, $cids, $token) {
     $formatedAddress = '';
-    if ($this->contact_id) {
+    if ($this->contact_id && isset($this->location_types['Work'])) {
       $address = civicrm_api('Address', 'getsingle', array(
         'contact_id' => $this->contact_id,
         'location_type_id' => $this->location_types['Work'],
@@ -711,7 +906,7 @@ class CRM_Tokens_CaseRelationship {
         $formatedAddress = $address['postal_code'];
       }
     }
-    $tokenValue= $formatedAddress;
+    $tokenValue = $formatedAddress;
 
     $this->setTokenValue($values, $cids, $token, $tokenValue);
   }
