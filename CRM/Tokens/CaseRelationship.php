@@ -133,6 +133,15 @@ class CRM_Tokens_CaseRelationship {
   }
 
   protected function isTokenInTokens($tokens, $token) {
+    if (in_array($token, $tokens)) {
+      return true;
+    } elseif (isset($tokens[$token])) {
+      return true;
+    } elseif (isset($tokens[$this->token_name]) && in_array($token, $tokens[$this->token_name])) {
+      return true;
+    } elseif (isset($tokens[$this->token_name][$token])) {
+      return true;
+    }
     return FALSE;
   }
 
