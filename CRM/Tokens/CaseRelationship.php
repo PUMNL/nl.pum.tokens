@@ -70,64 +70,65 @@ class CRM_Tokens_CaseRelationship {
     return false;
   }
 
-  public function tokens(&$tokens) {
+  public static function tokens(&$tokens, $token_name, $token_label) {
     $t = array();
-    $t[$this->token_name . '.address'] = ts('Address of ' . $this->token_label);
-    $t[$this->token_name . '.address_street'] = ts('Address street of ' . $this->token_label);
-    $t[$this->token_name . '.address_postalcode'] = ts('Address postalcode of ' . $this->token_label);
-    $t[$this->token_name . '.address_city'] = ts('Address city of ' . $this->token_label);
-    $t[$this->token_name . '.address_country'] = ts('Address country of ' . $this->token_label);
-    $t[$this->token_name . '.work_address'] = ts('Work address of ' . $this->token_label);
-    $t[$this->token_name . '.work_street'] = ts('Work address street of ' . $this->token_label);
-    $t[$this->token_name . '.work_postalcode'] = ts('Work address postalcode of ' . $this->token_label);
-    $t[$this->token_name . '.work_city'] = ts('Work address city of ' . $this->token_label);
-    $t[$this->token_name . '.work_country'] = ts('Work address country of ' . $this->token_label);
-    $t[$this->token_name . '.primary_phone'] = ts('Primary phone number of ' . $this->token_label);
-    $t[$this->token_name . '.home_phone'] = ts('Home phone number of ' . $this->token_label);
-    $t[$this->token_name . '.home_mobile'] = ts('Home mobile number of ' . $this->token_label);
-    $t[$this->token_name . '.home_fax'] = ts('Home fax number of ' . $this->token_label);
-    $t[$this->token_name . '.work_phone'] = ts('Work phone number of ' . $this->token_label);
-    $t[$this->token_name . '.work_mobile'] = ts('Work mobile number of ' . $this->token_label);
-    $t[$this->token_name . '.work_fax'] = ts('Work fax number of ' . $this->token_label);
-    $t[$this->token_name . '.main_phone'] = ts('Main phone number of ' . $this->token_label);
-    $t[$this->token_name . '.main_mobile'] = ts('Main mobile number of ' . $this->token_label);
-    $t[$this->token_name . '.main_fax'] = ts('Main fax number of ' . $this->token_label);
-    $t[$this->token_name . '.display_name'] = ts('Display name of ' . $this->token_label);
-    $t[$this->token_name . '.email'] = ts('E-mail address of ' . $this->token_label);
-    $t[$this->token_name . '.passport_first_name'] = ts('Passport firstname of ' . $this->token_label);
-    $t[$this->token_name . '.passport_last_name'] = ts('Passport lastname of ' . $this->token_label);
-    $t[$this->token_name . '.passport_number'] = ts('Passport number of ' . $this->token_label);
-    $t[$this->token_name . '.passport_valid'] = ts('Passport valid date of ' . $this->token_label);
-    $t[$this->token_name . '.passport_issue_date'] = ts('Passport issue date of ' . $this->token_label);
-    $t[$this->token_name . '.passport_issue_place'] = ts('Passport issue place of ' . $this->token_label);
-    $t[$this->token_name . '.passport_partner_name'] = ts('Passport partner name of ' . $this->token_label);
-    $t[$this->token_name . '.nationlity'] = ts('Nationality of ' . $this->token_label);
-    $t[$this->token_name . '.prefix'] = ts('Prefix of ' . $this->token_label);
-    $t[$this->token_name . '.first_name'] = ts('First name of ' . $this->token_label);
-    $t[$this->token_name . '.middle_name'] = ts('Middle name of ' . $this->token_label);
-    $t[$this->token_name . '.last_name'] = ts('Last name of ' . $this->token_label);
-    $t[$this->token_name . '.birth_date'] = ts('Birth date of ' . $this->token_label);
-    $t[$this->token_name . '.age'] = ts('Age of ' . $this->token_label);
+    $t[$token_name . '.address'] = ts('Address of ' . $token_label);
+    $t[$token_name . '.address_street'] = ts('Address street of ' . $token_label);
+    $t[$token_name . '.address_postalcode'] = ts('Address postalcode of ' . $token_label);
+    $t[$token_name . '.address_city'] = ts('Address city of ' . $token_label);
+    $t[$token_name . '.address_country'] = ts('Address country of ' . $token_label);
+    $t[$token_name . '.work_address'] = ts('Work address of ' . $token_label);
+    $t[$token_name . '.work_street'] = ts('Work address street of ' . $token_label);
+    $t[$token_name . '.work_postalcode'] = ts('Work address postalcode of ' . $token_label);
+    $t[$token_name . '.work_city'] = ts('Work address city of ' . $token_label);
+    $t[$token_name . '.work_country'] = ts('Work address country of ' . $token_label);
+    $t[$token_name . '.primary_phone'] = ts('Primary phone number of ' . $token_label);
+    $t[$token_name . '.home_phone'] = ts('Home phone number of ' . $token_label);
+    $t[$token_name . '.home_mobile'] = ts('Home mobile number of ' . $token_label);
+    $t[$token_name . '.home_fax'] = ts('Home fax number of ' . $token_label);
+    $t[$token_name . '.work_phone'] = ts('Work phone number of ' . $token_label);
+    $t[$token_name . '.work_mobile'] = ts('Work mobile number of ' . $token_label);
+    $t[$token_name . '.work_fax'] = ts('Work fax number of ' . $token_label);
+    $t[$token_name . '.main_phone'] = ts('Main phone number of ' . $token_label);
+    $t[$token_name . '.main_mobile'] = ts('Main mobile number of ' . $token_label);
+    $t[$token_name . '.main_fax'] = ts('Main fax number of ' . $token_label);
+    $t[$token_name . '.display_name'] = ts('Display name of ' . $token_label);
+    $t[$token_name . '.email'] = ts('E-mail address of ' . $token_label);
+    $t[$token_name . '.passport_first_name'] = ts('Passport firstname of ' . $token_label);
+    $t[$token_name . '.passport_last_name'] = ts('Passport lastname of ' . $token_label);
+    $t[$token_name . '.passport_number'] = ts('Passport number of ' . $token_label);
+    $t[$token_name . '.passport_valid'] = ts('Passport valid date of ' . $token_label);
+    $t[$token_name . '.passport_issue_date'] = ts('Passport issue date of ' . $token_label);
+    $t[$token_name . '.passport_issue_place'] = ts('Passport issue place of ' . $token_label);
+    $t[$token_name . '.passport_partner_name'] = ts('Passport partner name of ' . $token_label);
+    $t[$token_name . '.nationlity'] = ts('Nationality of ' . $token_label);
+    $t[$token_name . '.prefix'] = ts('Prefix of ' . $token_label);
+    $t[$token_name . '.first_name'] = ts('First name of ' . $token_label);
+    $t[$token_name . '.middle_name'] = ts('Middle name of ' . $token_label);
+    $t[$token_name . '.last_name'] = ts('Last name of ' . $token_label);
+    $t[$token_name . '.birth_date'] = ts('Birth date of ' . $token_label);
+    $t[$token_name . '.age'] = ts('Age of ' . $token_label);
 
-    if (!empty($this->salutations)) {
-      foreach ($this->salutations as $key => $value) {
-        $t[$this->token_name . '.salutation_' . $key] = ts('Salutation (' . $key . ') for ' . $this->token_label);
+    $config = CRM_Tokens_Config_Config::singleton();
+    if (!empty($config->getSalutations())) {
+      foreach ($config->getSalutations() as $key => $value) {
+        $t[$token_name . '.salutation_' . $key] = ts('Salutation (' . $key . ') for ' . $token_label);
       }
     }
 
-    if (!empty($this->salutations_full)) {
-      foreach ($this->salutations_full as $key => $value) {
-        $t[$this->token_name . '.salutationfull_' . $key] = ts('Salutation Full (' . $key . ') for ' . $this->token_label);
+    if (!empty($config->getSalutionsFull())) {
+      foreach ($config->getSalutionsFull() as $key => $value) {
+        $t[$token_name . '.salutationfull_' . $key] = ts('Salutation Full (' . $key . ') for ' . $token_label);
       }
     }
 
-    if (!empty($this->salutations_greeting)) {
-      foreach ($this->salutations_greeting as $key => $value) {
-        $t[$this->token_name . '.salutationgreeting_' . $key] = ts('Salutation Greeting (' . $key . ') for ' . $this->token_label);
+    if (!empty($config->getSalutionsGreeting())) {
+      foreach ($config->getSalutionsGreeting() as $key => $value) {
+        $t[$token_name . '.salutationgreeting_' . $key] = ts('Salutation Greeting (' . $key . ') for ' . $token_label);
       }
     }
 
-    $tokens[$this->token_name] = $t;
+    $tokens[$token_name] = $t;
   }
 
   public function tokenValues(&$values, $cids, $job = NULL, $tokens = array(), $context = NULL) {

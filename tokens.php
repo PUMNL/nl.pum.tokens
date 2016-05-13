@@ -12,20 +12,14 @@ function tokens_civicrm_buildForm($formName, &$form) {
 function tokens_civicrm_tokens(&$tokens) {
   
   // current case tokens
-  $client_tokens = new CRM_Tokens_ClientCase('client', 'Client');
-  $client_tokens->tokens($tokens);
-
-  $rct_tokens = new CRM_Tokens_CaseRelationship('Recruitment Team Member', 'rct', 'RCT');
-  $rct_tokens->tokens($tokens);
-
-  $rep_tokens = new CRM_Tokens_CaseRelationship('Representative is', 'representative', 'Representative');
-  $rep_tokens->tokens($tokens);
-
-  $expert_tokens = new CRM_Tokens_CaseRelationship('Expert', 'expert', 'Expert');
-  $expert_tokens->tokens($tokens);
-
-  $authorised_contact_tokens = new CRM_Tokens_CaseRelationship('Has authorised', 'authorised_contact', 'Authorised contact');
-  $authorised_contact_tokens->tokens($tokens);
+  CRM_Tokens_ClientCase::tokens($tokens, 'client', 'Client');
+  CRM_Tokens_CaseRelationship::tokens($tokens, 'rct', 'RCT');
+  CRM_Tokens_CaseRelationship::tokens($tokens, 'representative', 'Representative');
+  CRM_Tokens_CaseRelationship::tokens($tokens, 'expert', 'Expert');
+  CRM_Tokens_CaseRelationship::tokens($tokens, 'authorised_contact', 'Authorised contact');
+  CRM_Tokens_CaseRelationship::tokens($tokens, 'business_participant', 'Business participant');
+  CRM_Tokens_CaseRelationship::tokens($tokens, 'grant_coordinator', 'Grant Coordinator');
+  CRM_Tokens_CaseRelationship::tokens($tokens, 'business_coordinator', 'Business Coordinator');
 
   $cc = new CRM_Tokens_CountryCoordinator('Country Coordinator is', 'cc', 'Country Coordinator');
   $cc->tokens($tokens);
@@ -45,21 +39,13 @@ function tokens_civicrm_tokens(&$tokens) {
   $case_num = new CRM_Tokens_CaseNumber('case_number', 'PUM Case number');
   $case_num->tokens($tokens);
   
-  $bus_part_tokens = new CRM_Tokens_CaseRelationship('Business participant is', 'business_participant', 'Business participant');
-  $bus_part_tokens->tokens($tokens);
-  
   // parent case tokens
-  $parent_client_tokens = new CRM_Tokens_ClientCase('parent_client', 'Parent client', 'parent');
-  $parent_client_tokens->tokens($tokens);
-  
-  $parent_rep_tokens = new CRM_Tokens_CaseRelationship('Representative is', 'parent_representative', 'Parent Representative', 'parent');
-  $parent_rep_tokens->tokens($tokens);
-
-  $parent_expert_tokens = new CRM_Tokens_CaseRelationship('Expert', 'parent_expert', 'Parent Expert', 'parent');
-  $parent_expert_tokens->tokens($tokens);
-
-  $parent_authorised_contact_tokens = new CRM_Tokens_CaseRelationship('Has authorised', 'parent_authorised_contact', 'Parent Authorised contact', 'parent');
-  $parent_authorised_contact_tokens->tokens($tokens);
+  CRM_Tokens_ClientCase::tokens($tokens, 'parent_client', 'Parent client');
+  CRM_Tokens_CaseRelationship::tokens($tokens, 'parent_representative', 'Parent Representative');
+  CRM_Tokens_CaseRelationship::tokens($tokens, 'parent_expert', 'Parent Expert');
+  CRM_Tokens_CaseRelationship::tokens($tokens, 'parent_authorised_contact', 'Parent Authorised contact');
+  CRM_Tokens_CaseRelationship::tokens($tokens, 'parent_business_participant', 'Parent Business participant');
+  CRM_Tokens_CaseRelationship::tokens($tokens, 'parent_business_coordinator', 'Parent Business Coordinator');
   
   $parent_cc = new CRM_Tokens_CountryCoordinator('Country Coordinator is', 'parent_cc', 'Parent Country Coordinator', 'parent');
   $parent_cc->tokens($tokens);
@@ -78,18 +64,6 @@ function tokens_civicrm_tokens(&$tokens) {
 
   $parent_case_num = new CRM_Tokens_CaseNumber('parent_case_number', 'Parent PUM Case number', 'parent');
   $parent_case_num->tokens($tokens);
-  
-  $parent_bus_part_tokens = new CRM_Tokens_CaseRelationship('Business participant is', 'parent_business_participant', 'Parent Business participant', 'parent');
-  $parent_bus_part_tokens->tokens($tokens);
-  
-  $grant_coordinator_tokens = new CRM_Tokens_CaseRelationship('Grant Coordinator', 'grant_coordinator', 'Grant Coordinator');
-  $grant_coordinator_tokens->tokens($tokens);
-
-  $business_coordinator_tokens = new CRM_Tokens_CaseRelationship('Business Coordinator', 'business_coordinator', 'Business Coordinator');
-  $business_coordinator_tokens->tokens($tokens);
-  
-  $parent_business_coordinator_tokens = new CRM_Tokens_CaseRelationship('Business Coordinator', 'parent_business_coordinator', 'Parent Business Coordinator', 'parent');
-  $parent_business_coordinator_tokens->tokens($tokens);
   
   // misc
   $info_tokens = new CRM_Tokens_SysInfo('server', 'Server');
