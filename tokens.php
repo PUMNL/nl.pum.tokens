@@ -21,14 +21,9 @@ function tokens_civicrm_tokens(&$tokens) {
   CRM_Tokens_CaseRelationship::tokens($tokens, 'grant_coordinator', 'Grant Coordinator');
   CRM_Tokens_CaseRelationship::tokens($tokens, 'business_coordinator', 'Business Coordinator');
 
-  $cc = new CRM_Tokens_CountryCoordinator('Country Coordinator is', 'cc', 'Country Coordinator');
-  $cc->tokens($tokens);
-
-  $proj_off = new CRM_Tokens_CountryCoordinator('Project Officer for', 'proj_off', 'Project officer');
-  $proj_off->tokens($tokens);
-
-  $sc = new CRM_Tokens_SectorCoordinator('Sector Coordinator', 'sc', 'Sector Coordinator');
-  $sc->tokens($tokens);
+  CRM_Tokens_CountryCoordinator::tokens($tokens, 'cc', 'Country Coordinator');
+  CRM_Tokens_CountryCoordinator::tokens($tokens, 'proj_off', 'Project officer');
+  CRM_Tokens_SectorCoordinator::tokens($tokens, 'sc', 'Sector Coordinator');
   
   $main_info = new CRM_Tokens_MainActivityInfo('mainactivity_info', 'Main Activity information');
   $main_info->tokens($tokens);
@@ -46,15 +41,9 @@ function tokens_civicrm_tokens(&$tokens) {
   CRM_Tokens_CaseRelationship::tokens($tokens, 'parent_authorised_contact', 'Parent Authorised contact');
   CRM_Tokens_CaseRelationship::tokens($tokens, 'parent_business_participant', 'Parent Business participant');
   CRM_Tokens_CaseRelationship::tokens($tokens, 'parent_business_coordinator', 'Parent Business Coordinator');
-  
-  $parent_cc = new CRM_Tokens_CountryCoordinator('Country Coordinator is', 'parent_cc', 'Parent Country Coordinator', 'parent');
-  $parent_cc->tokens($tokens);
-
-  $parent_proj_off = new CRM_Tokens_CountryCoordinator('Project Officer for', 'parent_proj_off', 'Parent Project officer', 'parent');
-  $parent_proj_off->tokens($tokens);
-
-  $parent_sc = new CRM_Tokens_SectorCoordinator('Sector Coordinator', 'parent_sc', 'Parent Sector Coordinator', 'parent');
-  $parent_sc->tokens($tokens);
+  CRM_Tokens_CountryCoordinator::tokens($tokens, 'parent_cc', 'Parent Country Coordinator');
+  CRM_Tokens_CountryCoordinator::tokens($tokens, 'parent_proj_off', 'Parent Project officer');
+  CRM_Tokens_SectorCoordinator::tokens($tokens, 'parent_sc', 'Parent Sector Coordinator');
   
   $parent_main_info = new CRM_Tokens_MainActivityInfo('parent_mainactivity_info', 'Parent Main Activity information', 'parent');
   $parent_main_info->tokens($tokens);
