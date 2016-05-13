@@ -53,8 +53,9 @@ class CRM_Tokens_CaseRelationship {
   protected function getContactId() {
     if ($this->contact_id) {
       return $this->contact_id;
-    } elseif (!$this->case_id) {
-      return false;
+    }
+    elseif (!$this->case_id) {
+      return FALSE;
     }
 
     try {
@@ -67,7 +68,7 @@ class CRM_Tokens_CaseRelationship {
     } catch (Exception $e) {
       //do nothing
     }
-    return false;
+    return FALSE;
   }
 
   public static function tokens(&$tokens, $token_name, $token_label) {
@@ -131,59 +132,142 @@ class CRM_Tokens_CaseRelationship {
     $tokens[$token_name] = $t;
   }
 
+  protected function isTokenInTokens($tokens, $token) {
+    return FALSE;
+  }
+
   public function tokenValues(&$values, $cids, $job = NULL, $tokens = array(), $context = NULL) {
-    $this->addressToken($values, $cids, 'address');
-    $this->addressStreetToken($values, $cids, 'address_street');
-    $this->addressPostalCodeToken($values, $cids, 'address_postalcode');
-    $this->addressCityToken($values, $cids, 'address_city');
-    $this->addressCountryToken($values, $cids, 'address_country');
-    $this->workAddressToken($values, $cids, 'work_address');
-    $this->workStreetToken($values, $cids, 'work_street');
-    $this->workPostalCodeToken($values, $cids, 'work_postalcode');
-    $this->workCityToken($values, $cids, 'work_city');
-    $this->workCountryToken($values, $cids, 'work_country');
-    $this->displayNameToken($values, $cids, 'display_name');
-    $this->emailToken($values, $cids, 'email');
-    $this->workPhoneToken($values, $cids, 'work_phone');
-    $this->passportFirstName($values, $cids, 'passport_first_name');
-    $this->passportLastName($values, $cids, 'passport_last_name');
-    $this->passportNumber($values, $cids, 'passport_number');
-    $this->passportValid($values, $cids, 'passport_valid');
-    $this->passportIssueDate($values, $cids, 'passport_issue_date');
-    $this->passportIssuePlace($values, $cids, 'passport_issue_place');
-    $this->passportPartnerName($values, $cids, 'passport_partner_name');
-    $this->nationality($values, $cids, 'nationlity');
-    $this->prefixToken($values, $cids, 'prefix');
-    $this->firstNameToken($values, $cids, 'first_name');
-    $this->middleNameToken($values, $cids, 'middle_name');
-    $this->lastNameToken($values, $cids, 'last_name');
-    $this->birthDate($values, $cids, 'birth_date');
-    $this->age($values, $cids, 'age');
-    $this->homePhoneToken($values, $cids, 'home_phone');
-    $this->homeMobileToken($values, $cids, 'home_mobile');
-    $this->homeFaxToken($values, $cids, 'home_fax');
-    $this->workMobileToken($values, $cids, 'work_mobile');
-    $this->workFaxToken($values, $cids, 'work_fax');
-    $this->mainPhoneToken($values, $cids, 'main_phone');
-    $this->mainMobileToken($values, $cids, 'main_mobile');
-    $this->mainFaxToken($values, $cids, 'main_fax');
-    $this->primaryPhoneToken($values, $cids, 'primary_phone');
+    if ($this->isTokenInTokens($tokens, 'address')) {
+      $this->addressToken($values, $cids, 'address');
+    }
+    if ($this->isTokenInTokens($tokens, 'address_street')) {
+      $this->addressStreetToken($values, $cids, 'address_street');
+    }
+    if ($this->isTokenInTokens($tokens, 'address_postalcode')) {
+      $this->addressPostalCodeToken($values, $cids, 'address_postalcode');
+    }
+    if ($this->isTokenInTokens($tokens, 'address_city')) {
+      $this->addressCityToken($values, $cids, 'address_city');
+    }
+    if ($this->isTokenInTokens($tokens, 'address_country')) {
+      $this->addressCountryToken($values, $cids, 'address_country');
+    }
+    if ($this->isTokenInTokens($tokens, 'work_address')) {
+      $this->workAddressToken($values, $cids, 'work_address');
+    }
+    if ($this->isTokenInTokens($tokens, 'work_street')) {
+      $this->workStreetToken($values, $cids, 'work_street');
+    }
+    if ($this->isTokenInTokens($tokens, 'work_postalcode')) {
+      $this->workPostalCodeToken($values, $cids, 'work_postalcode');
+    }
+    if ($this->isTokenInTokens($tokens, 'work_city')) {
+      $this->workCityToken($values, $cids, 'work_city');
+    }
+    if ($this->isTokenInTokens($tokens, 'work_country')) {
+      $this->workCountryToken($values, $cids, 'work_country');
+    }
+    if ($this->isTokenInTokens($tokens, 'display_name')) {
+      $this->displayNameToken($values, $cids, 'display_name');
+    }
+    if ($this->isTokenInTokens($tokens, 'email')) {
+      $this->emailToken($values, $cids, 'email');
+    }
+    if ($this->isTokenInTokens($tokens, 'work_phone')) {
+      $this->workPhoneToken($values, $cids, 'work_phone');
+    }
+    if ($this->isTokenInTokens($tokens, 'passport_first_name')) {
+      $this->passportFirstName($values, $cids, 'passport_first_name');
+    }
+    if ($this->isTokenInTokens($tokens, 'passport_last_name')) {
+      $this->passportLastName($values, $cids, 'passport_last_name');
+    }
+    if ($this->isTokenInTokens($tokens, 'passport_number')) {
+      $this->passportNumber($values, $cids, 'passport_number');
+    }
+    if ($this->isTokenInTokens($tokens, 'passport_valid')) {
+      $this->passportValid($values, $cids, 'passport_valid');
+    }
+    if ($this->isTokenInTokens($tokens, 'passport_issue_date')) {
+      $this->passportIssueDate($values, $cids, 'passport_issue_date');
+    }
+    if ($this->isTokenInTokens($tokens, 'passport_issue_place')) {
+      $this->passportIssuePlace($values, $cids, 'passport_issue_place');
+    }
+    if ($this->isTokenInTokens($tokens, 'passport_partner_name')) {
+      $this->passportPartnerName($values, $cids, 'passport_partner_name');
+    }
+    if ($this->isTokenInTokens($tokens, 'nationlity')) {
+      $this->nationality($values, $cids, 'nationlity');
+    }
+    if ($this->isTokenInTokens($tokens, 'prefix')) {
+      $this->prefixToken($values, $cids, 'prefix');
+    }
+    if ($this->isTokenInTokens($tokens, 'first_name')) {
+      $this->firstNameToken($values, $cids, 'first_name');
+    }
+    if ($this->isTokenInTokens($tokens, 'middle_name')) {
+      $this->middleNameToken($values, $cids, 'middle_name');
+    }
+    if ($this->isTokenInTokens($tokens, 'last_name')) {
+      $this->lastNameToken($values, $cids, 'last_name');
+    }
+    if ($this->isTokenInTokens($tokens, 'birth_date')) {
+      $this->birthDate($values, $cids, 'birth_date');
+    }
+    if ($this->isTokenInTokens($tokens, 'age')) {
+      $this->age($values, $cids, 'age');
+    }
+    if ($this->isTokenInTokens($tokens, 'home_phone')) {
+      $this->homePhoneToken($values, $cids, 'home_phone');
+    }
+    if ($this->isTokenInTokens($tokens, 'home_mobile')) {
+      $this->homeMobileToken($values, $cids, 'home_mobile');
+    }
+    if ($this->isTokenInTokens($tokens, 'home_fax')) {
+      $this->homeFaxToken($values, $cids, 'home_fax');
+    }
+    if ($this->isTokenInTokens($tokens, 'work_mobile')) {
+      $this->workMobileToken($values, $cids, 'work_mobile');
+    }
+    if ($this->isTokenInTokens($tokens, 'work_fax')) {
+      $this->workFaxToken($values, $cids, 'work_fax');
+    }
+    if ($this->isTokenInTokens($tokens, 'main_phone')) {
+      $this->mainPhoneToken($values, $cids, 'main_phone');
+    }
+    if ($this->isTokenInTokens($tokens, 'main_mobile')) {
+      $this->mainMobileToken($values, $cids, 'main_mobile');
+    }
+    if ($this->isTokenInTokens($tokens, 'main_fax')) {
+      $this->mainFaxToken($values, $cids, 'main_fax');
+    }
+    if ($this->isTokenInTokens($tokens, 'primary_phone')) {
+      $this->primaryPhoneToken($values, $cids, 'primary_phone');
+    }
+
 
     if (!empty($this->salutations)) {
       foreach ($this->salutations as $key => $value) {
-        $this->salutationToken($values, $cids, 'salutation_' . $key, $key);
+        if ($this->isTokenInTokens($tokens, 'salutation_' . $key)) {
+          $this->salutationToken($values, $cids, 'salutation_' . $key, $key);
+        }
       }
     }
 
     if (!empty($this->salutations_full)) {
       foreach ($this->salutations_full as $key => $value) {
-        $this->salutationFullToken($values, $cids, 'salutationfull_' . $key, $key);
+        if ($this->isTokenInTokens($tokens, 'salutationfull_' . $key)) {
+          $this->salutationFullToken($values, $cids, 'salutationfull_' . $key, $key);
+        }
       }
     }
 
     if (!empty($this->salutations_greeting)) {
       foreach ($this->salutations_greeting as $key => $value) {
-        $this->salutationgreetingToken($values, $cids, 'salutationgreeting_' . $key, $key);
+        if ($this->isTokenInTokens($tokens, 'salutationgreeting_' . $key)) {
+          $this->salutationgreetingToken($values, $cids, 'salutationgreeting_' . $key, $key);
+        }
       }
     }
   }
