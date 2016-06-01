@@ -4,8 +4,8 @@ class CRM_Tokens_SectorCoordinator extends CRM_Tokens_CaseRelationship {
 
   private $sc_role;
 
-  public function __construct($relationship_type_name_a_b, $token_name, $token_label, $case_id = NULL) {
-    parent::__construct($relationship_type_name_a_b, $token_name, $token_label);
+  public function __construct($relationship_type_name_a_b, $token_name, $token_label, $values, $case_id = NULL) {
+    parent::__construct($relationship_type_name_a_b, $token_name, $token_label, $values, $case_id);
 
     $segment_roles = civicrm_api3('OptionGroup', 'getvalue', array('name' => 'civicoop_segment_role', 'return' => 'id'));
     $this->sc_role = civicrm_api3('OptionValue', 'getvalue', array('name' => 'sector_coordinator', 'option_group_id' => $segment_roles, 'return' => 'value'));

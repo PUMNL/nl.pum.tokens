@@ -2,6 +2,10 @@
 
 class CRM_Tokens_CaseRelationship {
 
+  protected $scheduled_reminder_token = false;
+
+  protected static $case_activity_ids = array();
+
   protected $relationship_type;
 
   protected $token_name;
@@ -24,7 +28,7 @@ class CRM_Tokens_CaseRelationship {
 
   protected $gender;
 
-  public function __construct($relationship_type_name_a_b, $token_name, $token_label, $case_id = NULL) {
+  public function __construct($relationship_type_name_a_b, $token_name, $token_label, $values, $case_id = NULL) {
     $this->token_name = $token_name;
     $this->token_label = $token_label;
     $this->relationship_type = civicrm_api3('RelationshipType', 'getsingle', array('name_a_b' => $relationship_type_name_a_b));
@@ -47,6 +51,20 @@ class CRM_Tokens_CaseRelationship {
     }
     else {
       $this->case_id = $case_id;
+    }
+
+    if (is_array($values) && isset($values['activity.activity_id']) && empty($this->case_id)) {
+      $activity_id = $values['activity.activity_id'];
+      if (!isset(self::$case_activity_ids[$activity_id])) {
+        self::$case_activity_ids[$activity_id] = false;
+        self::$case_activity_ids[$activity_id] = CRM_Core_DAO::singleValueQuery("SELECT case_id from civicrm_case_activity where activity_id = %1", array(1=>array($activity_id, 'Integer')));
+      }
+      if (!empty(self::$case_activity_ids[$activity_id])) {
+        $this->case_id = self::$case_activity_ids[$activity_id];
+      }
+    }
+    if (is_array($values) && isset($values['activity.activity_id']) && !empty($this->case_id)) {
+      $this->scheduled_reminder_token = true;
     }
   }
 
@@ -140,6 +158,8 @@ class CRM_Tokens_CaseRelationship {
     } elseif (isset($tokens[$this->token_name]) && in_array($token, $tokens[$this->token_name])) {
       return true;
     } elseif (isset($tokens[$this->token_name][$token])) {
+      return true;
+    } elseif ($this->scheduled_reminder_token) {
       return true;
     }
     return FALSE;

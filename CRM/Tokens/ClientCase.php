@@ -6,7 +6,7 @@ class CRM_Tokens_ClientCase extends CRM_Tokens_CaseRelationship {
   
   protected $phone_types = array();
   
-  public function __construct($token_name, $token_label, $case_id = null) {
+  public function __construct($token_name, $token_label, $values, $case_id = null) {
     $this->token_name = $token_name;
     $this->token_label = $token_label;
 
@@ -26,6 +26,20 @@ class CRM_Tokens_ClientCase extends CRM_Tokens_CaseRelationship {
       $this->case_id = CRM_Tokens_CaseId::getParentCaseId();
     } else {
       $this->case_id = $case_id;
+    }
+
+    if (is_array($values) && isset($values['activity.activity_id']) && empty($this->case_id)) {
+      $activity_id = $values['activity.activity_id'];
+      if (!isset(self::$case_activity_ids[$activity_id])) {
+        self::$case_activity_ids[$activity_id] = false;
+        self::$case_activity_ids[$activity_id] = CRM_Core_DAO::singleValueQuery("SELECT case_id from civicrm_case_activity where activity_id = %1", array(1=>array($activity_id, 'Integer')));
+      }
+      if (!empty(self::$case_activity_ids[$activity_id])) {
+        $this->case_id = self::$case_activity_ids[$activity_id];
+      }
+    }
+    if (is_array($values) && isset($values['activity.activity_id']) && !empty($this->case_id)) {
+      $this->scheduled_reminder_token = true;
     }
   }
 
