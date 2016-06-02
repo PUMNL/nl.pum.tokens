@@ -28,7 +28,7 @@ class CRM_Tokens_ClientCase extends CRM_Tokens_CaseRelationship {
       $this->case_id = $case_id;
     }
 
-    if (is_array($values) && isset($values['activity.activity_id']) && empty($this->case_id)) {
+    if (is_array($values) && isset($values['activity.activity_id'])) {
       $activity_id = $values['activity.activity_id'];
       if (!isset(self::$case_activity_ids[$activity_id])) {
         self::$case_activity_ids[$activity_id] = false;
@@ -36,6 +36,9 @@ class CRM_Tokens_ClientCase extends CRM_Tokens_CaseRelationship {
       }
       if (!empty(self::$case_activity_ids[$activity_id])) {
         $this->case_id = self::$case_activity_ids[$activity_id];
+      }
+      if ($case_id == 'parent') {
+        $this->case_id = CRM_Tokens_CaseId::fetchParentCaseId($this->case_id);
       }
     }
     if (is_array($values) && isset($values['activity.activity_id']) && !empty($this->case_id)) {
