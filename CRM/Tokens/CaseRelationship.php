@@ -527,7 +527,7 @@ class CRM_Tokens_CaseRelationship {
       if (!empty($phoneNumber['values'])) {
         $phoneFilter = $this->phoneFilter($phoneNumber['values']);
         if (!empty($phoneFilter['phone'])) {
-          $tokenValue = $phoneFilter['phone'];
+          $phone = $phoneFilter['phone'];
         }
       }
 
@@ -703,11 +703,6 @@ class CRM_Tokens_CaseRelationship {
 
 
   private function phoneFilter($phoneNumbers) {
-    $phoneTypeGroupId = civicrm_api('OptionGroup', 'getsingle', array(
-      'version' => 3,
-      'name' => 'phone_type',
-      'return' => 'id',
-    ));
     $phoneTypeValues = civicrm_api('OptionValue', 'get', array(
       'version' => 3,
       'option_group_name' => 'phone_type',
