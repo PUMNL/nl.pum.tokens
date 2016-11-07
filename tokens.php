@@ -34,6 +34,10 @@ function tokens_civicrm_tokens(&$tokens) {
   $case_num = new CRM_Tokens_CaseNumber('case_number', 'PUM Case number');
   $case_num->tokens($tokens);
   
+  //Case donation info
+  $case_donation = new CRM_Tokens_CaseDonation('case_donation', 'Case donation for FA');
+  $case_donation->tokens($tokens);
+  
   // parent case tokens
   CRM_Tokens_ClientCase::tokens($tokens, 'parent_client', 'Parent client');
   CRM_Tokens_CaseRelationship::tokens($tokens, 'parent_representative', 'Parent Representative');
@@ -105,6 +109,10 @@ function tokens_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = arra
   
   $case_num = new CRM_Tokens_CaseNumber('case_number', 'PUM Case number');
   $case_num->tokenValues($values, $cids, $job, $tokens, $context);
+  
+  //Case donation info
+  $case_donation = new CRM_Tokens_CaseDonation('case_donation', 'Case donation for FA');
+  $case_donation->tokenValues($values, $cids, $job, $tokens, $context);
   
   $bus_part_tokens = new CRM_Tokens_CaseRelationship('Business participant is', 'business_participant', 'Business participant', $values);
   $bus_part_tokens->tokenValues($values, $cids, $job, $tokens, $context);

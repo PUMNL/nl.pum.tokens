@@ -118,7 +118,7 @@ class Tokens_OptionGroup {
 					array(
 						'label'			=> 'mr_fr',
 						'name'			=> 'mr_fr',
-						'value'			=> 'monsieur',
+						'value'			=> 'Monsieur',
 						'weight'		=> 50,
 						'description'	=> '',
 						'default'		=> FALSE,
@@ -126,7 +126,7 @@ class Tokens_OptionGroup {
 					array(
 						'label'			=> 'mrs_fr',
 						'name'			=> 'mrs_fr',
-						'value'			=> 'madame',
+						'value'			=> 'Madame',
 						'weight'		=> 60,
 						'description'	=> '',
 						'default'		=> FALSE,
@@ -197,7 +197,7 @@ class Tokens_OptionGroup {
 					array(
 						'label'			=> 'mrs_fr',
 						'name'			=> 'mrs_fr',
-						'value'			=> 'Ch'.html_entity_decode("&eacute;",ENT_COMPAT,"UTF-8").'re',
+						'value'			=> 'Ch'.html_entity_decode("&egrave;",ENT_COMPAT,"UTF-8").'re',
 						'weight'		=> 60,
 						'description'	=> '',
 						'default'		=> FALSE,

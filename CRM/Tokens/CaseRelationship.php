@@ -362,7 +362,7 @@ class CRM_Tokens_CaseRelationship {
       ));
       if ($passport_valid) {
         $validDate = new DateTime($passport_valid);
-        $tokenValue = $validDate->format('Y-m-d');
+        $tokenValue = $validDate->format('d-m-Y');
       }
     }
     $this->setTokenValue($values, $cids, $token, $tokenValue);
@@ -378,7 +378,7 @@ class CRM_Tokens_CaseRelationship {
       ));
       if ($passport_issued) {
         $validDate = new DateTime($passport_issued);
-        $tokenValue = $validDate->format('Y-m-d');
+        $tokenValue = $validDate->format('d-m-Y');
       }
     }
     $this->setTokenValue($values, $cids, $token, $tokenValue);
