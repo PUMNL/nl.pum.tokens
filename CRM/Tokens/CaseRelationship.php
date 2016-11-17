@@ -866,8 +866,16 @@ class CRM_Tokens_CaseRelationship {
         $country_id = $address['country_id'];
         $country = CRM_Core_PseudoConstant::country($country_id);
 
-        $formatedAddress .= $address['street_address'] . "<br>\r\n";
-        $formatedAddress .= $address['postal_code'] . ' ' . $address['city'] . "<br>\r\n";
+        if (!empty($address['street_address'])) {
+          $formatedAddress .= $address['street_address'] . "<br>\r\n";
+        }
+        if (!empty($address['postal_code']) && !empty($address['city'])) {
+          $formatedAddress .= $address['postal_code'] . ' ' . $address['city'] . "<br>\r\n";
+        } elseif (!empty($address['city'])) {
+          $formatedAddress .= $address['city']."<br>\r\n";
+        } elseif (!empty($address['postal_code'])) {
+          $formatedAddress .= $address['postal_code']."<br>\r\n";
+        }
         $formatedAddress .= $country;
       }
     }
