@@ -19,7 +19,6 @@ function tokens_civicrm_tokens(&$tokens) {
   CRM_Tokens_CaseRelationship::tokens($tokens, 'authorised_contact', 'Authorised contact');
   CRM_Tokens_CaseRelationship::tokens($tokens, 'business_participant', 'Business participant');
   CRM_Tokens_CaseRelationship::tokens($tokens, 'grant_coordinator', 'Grant Coordinator');
-  CRM_Tokens_CaseRelationship::tokens($tokens, 'business_coordinator', 'Business Coordinator');
 
   CRM_Tokens_CountryCoordinator::tokens($tokens, 'cc', 'Country Coordinator');
   CRM_Tokens_CountryCoordinator::tokens($tokens, 'proj_off', 'Project officer');
@@ -44,7 +43,6 @@ function tokens_civicrm_tokens(&$tokens) {
   CRM_Tokens_CaseRelationship::tokens($tokens, 'parent_expert', 'Parent Expert');
   CRM_Tokens_CaseRelationship::tokens($tokens, 'parent_authorised_contact', 'Parent Authorised contact');
   CRM_Tokens_CaseRelationship::tokens($tokens, 'parent_business_participant', 'Parent Business participant');
-  CRM_Tokens_CaseRelationship::tokens($tokens, 'parent_business_coordinator', 'Parent Business Coordinator');
   CRM_Tokens_CountryCoordinator::tokens($tokens, 'parent_cc', 'Parent Country Coordinator');
   CRM_Tokens_CountryCoordinator::tokens($tokens, 'parent_proj_off', 'Parent Project officer');
   CRM_Tokens_SectorCoordinator::tokens($tokens, 'parent_sc', 'Parent Sector Coordinator');
@@ -154,12 +152,6 @@ function tokens_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = arra
 
   $grant_coordinator_tokens = new CRM_Tokens_CaseRelationship('Grant Coordinator', 'grant_coordinator', 'Grant Coordinator', $values);
   $grant_coordinator_tokens->tokenValues($values, $cids, $job, $tokens, $context);
-  
-  $business_coordinator_tokens = new CRM_Tokens_CaseRelationship('Business Coordinator', 'business_coordinator', 'Business Coordinator', $values);
-  $business_coordinator_tokens->tokenValues($values, $cids, $job, $tokens, $context);
-  
-  $parent_business_coordinator_tokens = new CRM_Tokens_CaseRelationship('Business Coordinator', 'parent_business_coordinator', 'Parent Business Coordinator', $values, 'parent');
-  $parent_business_coordinator_tokens->tokenValues($values, $cids, $job, $tokens, $context);
     
   // misc
   $info_tokens = new CRM_Tokens_SysInfo('server', 'Server');
