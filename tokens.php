@@ -10,7 +10,7 @@ function tokens_civicrm_buildForm($formName, &$form) {
 }
 
 function tokens_civicrm_tokens(&$tokens) {
-  
+
   // current case tokens
   CRM_Tokens_ClientCase::tokens($tokens, 'client', 'Client');
   CRM_Tokens_CaseRelationship::tokens($tokens, 'rct', 'RCT');
@@ -23,20 +23,20 @@ function tokens_civicrm_tokens(&$tokens) {
   CRM_Tokens_CountryCoordinator::tokens($tokens, 'cc', 'Country Coordinator');
   CRM_Tokens_CountryCoordinator::tokens($tokens, 'proj_off', 'Project officer');
   CRM_Tokens_SectorCoordinator::tokens($tokens, 'sc', 'Sector Coordinator');
-  
+
   $main_info = new CRM_Tokens_MainActivityInfo('mainactivity_info', 'Main Activity information');
   $main_info->tokens($tokens);
-  
+
   $info_dsa = new CRM_Tokens_InfoDsa('info_dsa', 'Info for DSA');
   $info_dsa->tokens($tokens);
-  
+
   $case_num = new CRM_Tokens_CaseNumber('case_number', 'PUM Case number');
   $case_num->tokens($tokens);
-  
+
   //Case donation info
   $case_donation = new CRM_Tokens_CaseDonation('case_donation', 'Case donation for FA');
   $case_donation->tokens($tokens);
-  
+
   // parent case tokens
   CRM_Tokens_ClientCase::tokens($tokens, 'parent_client', 'Parent client');
   CRM_Tokens_CaseRelationship::tokens($tokens, 'parent_representative', 'Parent Representative');
@@ -46,16 +46,16 @@ function tokens_civicrm_tokens(&$tokens) {
   CRM_Tokens_CountryCoordinator::tokens($tokens, 'parent_cc', 'Parent Country Coordinator');
   CRM_Tokens_CountryCoordinator::tokens($tokens, 'parent_proj_off', 'Parent Project officer');
   CRM_Tokens_SectorCoordinator::tokens($tokens, 'parent_sc', 'Parent Sector Coordinator');
-  
+
   $parent_main_info = new CRM_Tokens_MainActivityInfo('parent_mainactivity_info', 'Parent Main Activity information', 'parent');
   $parent_main_info->tokens($tokens);
-    
+
   $parent_info_dsa = new CRM_Tokens_InfoDsa('parent_info_dsa', 'Parent Info for DSA', 'parent');
   $parent_info_dsa->tokens($tokens);
 
   $parent_case_num = new CRM_Tokens_CaseNumber('parent_case_number', 'Parent PUM Case number', 'parent');
   $parent_case_num->tokens($tokens);
-  
+
   // misc
   $info_tokens = new CRM_Tokens_SysInfo('server', 'Server');
   $info_tokens->tokens($tokens);
@@ -74,7 +74,7 @@ function tokens_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = arra
 
 
   // current case tokens
-  
+
   $client_tokens = new CRM_Tokens_ClientCase('client', 'Client', $values);
   $client_tokens->tokenValues($values, $cids, $job, $tokens, $context);
 
@@ -101,34 +101,34 @@ function tokens_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = arra
 
   $main_info = new CRM_Tokens_MainActivityInfo('mainactivity_info', 'Main Activity information');
   $main_info->tokenValues($values, $cids, $job, $tokens, $context);
-  
+
   $info_dsa = new CRM_Tokens_InfoDsa('info_dsa', 'Info for DSA');
   $info_dsa->tokenValues($values, $cids, $job, $tokens, $context);
-  
+
   $case_num = new CRM_Tokens_CaseNumber('case_number', 'PUM Case number');
   $case_num->tokenValues($values, $cids, $job, $tokens, $context);
-  
+
   //Case donation info
   $case_donation = new CRM_Tokens_CaseDonation('case_donation', 'Case donation for FA');
   $case_donation->tokenValues($values, $cids, $job, $tokens, $context);
-  
+
   $bus_part_tokens = new CRM_Tokens_CaseRelationship('Business participant is', 'business_participant', 'Business participant', $values);
   $bus_part_tokens->tokenValues($values, $cids, $job, $tokens, $context);
-  
+
   // parent case tokens
-  
+
   $parent_client_tokens = new CRM_Tokens_ClientCase('parent_client', 'Parent Client', $values, 'parent');
   $parent_client_tokens->tokenValues($values, $cids, $job, $tokens, $context);
-  
+
   $parent_rep_tokens = new CRM_Tokens_CaseRelationship('Representative is', 'parent_representative', 'Parent Representative', $values, 'parent');
   $parent_rep_tokens->tokenValues($values, $cids, $job, $tokens, $context);
-  
+
   $parent_expert_tokens = new CRM_Tokens_CaseRelationship('Expert', 'parent_expert', 'Parent Expert', $values, 'parent');
   $parent_expert_tokens->tokenValues($values, $cids, $job, $tokens, $context);
 
   $parent_authorised_contact_tokens = new CRM_Tokens_CaseRelationship('Has authorised', 'parent_authorised_contact', 'Parent Authorised contact', $values, 'parent');
   $parent_authorised_contact_tokens->tokenValues($values, $cids, $job, $tokens, $context);
-  
+
   $parent_cc = new CRM_Tokens_CountryCoordinator('Country Coordinator is', 'parent_cc', 'Parent Country Coordinator', $values, 'parent');
   $parent_cc->tokenValues($values, $cids, $job, $tokens, $context);
 
@@ -137,22 +137,22 @@ function tokens_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = arra
 
   $parent_sc = new CRM_Tokens_SectorCoordinator('Sector Coordinator', 'parent_sc', 'Parent Sector Coordinator', $values, 'parent');
   $parent_sc->tokenValues($values, $cids, $job, $tokens, $context);
-  
+
   $parent_main_info = new CRM_Tokens_MainActivityInfo('parent_mainactivity_info', 'Parent Main Activity information', 'parent');
   $parent_main_info->tokenValues($values, $cids, $job, $tokens, $context);
-  
+
   $parent_info_dsa = new CRM_Tokens_InfoDsa('parent_info_dsa', 'Parent info for DSA', 'parent');
   $parent_info_dsa->tokenValues($values, $cids, $job, $tokens, $context);
-  
+
   $parent_case_num = new CRM_Tokens_CaseNumber('parent_case_number', 'Parent PUM Case number', 'parent');
   $parent_case_num->tokenValues($values, $cids, $job, $tokens, $context);
-  
+
   $parent_bus_part_tokens = new CRM_Tokens_CaseRelationship('Business participant is', 'parent_business_participant', 'Parent Business participant', $values, 'parent');
   $parent_bus_part_tokens->tokenValues($values, $cids, $job, $tokens, $context);
 
   $grant_coordinator_tokens = new CRM_Tokens_CaseRelationship('Grant Coordinator', 'grant_coordinator', 'Grant Coordinator', $values);
   $grant_coordinator_tokens->tokenValues($values, $cids, $job, $tokens, $context);
-    
+
   // misc
   $info_tokens = new CRM_Tokens_SysInfo('server', 'Server');
   $info_tokens->tokenValues($values, $cids, $job, $tokens, $context);
