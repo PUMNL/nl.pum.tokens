@@ -14,9 +14,12 @@ class CRM_Tokens_ActivitySourceContactTokens {
 
   protected $salutations_greeting;
 
+  protected $gender;
+
   public function __construct() {
     $config = CRM_Tokens_Config_Config::singleton();
 
+    $this->gender = $config->getGender();
     $this->salutations = $config->getSalutations();
     $this->salutations_full = $config->getSalutionsFull();
     $this->salutations_greeting = $config->getSalutionsGreeting();
