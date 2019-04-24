@@ -27,6 +27,9 @@ function tokens_civicrm_tokens(&$tokens) {
   $main_info = new CRM_Tokens_MainActivityInfo('mainactivity_info', 'Main Activity information');
   $main_info->tokens($tokens);
 
+  $cust_contribution = new CRM_Tokens_CustomerContribution('customer_contribution', 'Customer Contribution');
+  $cust_contribution->tokens($tokens);
+
   $info_dsa = new CRM_Tokens_InfoDsa('info_dsa', 'Info for DSA');
   $info_dsa->tokens($tokens);
 
@@ -101,6 +104,9 @@ function tokens_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = arra
 
   $main_info = new CRM_Tokens_MainActivityInfo('mainactivity_info', 'Main Activity information');
   $main_info->tokenValues($values, $cids, $job, $tokens, $context);
+
+  $cust_contribution = new CRM_Tokens_CustomerContribution('customer_contribution', 'Customer Contribution');
+  $cust_contribution->tokenValues($values, $cids, $job, $tokens, $context);
 
   $info_dsa = new CRM_Tokens_InfoDsa('info_dsa', 'Info for DSA');
   $info_dsa->tokenValues($values, $cids, $job, $tokens, $context);
