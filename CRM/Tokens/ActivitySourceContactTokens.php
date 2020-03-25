@@ -31,6 +31,10 @@ class CRM_Tokens_ActivitySourceContactTokens {
     $t[$this->token_name . '.prefix'] = ts('Prefix of ' . $this->token_label);
     $t[$this->token_name . '.middle_name'] = ts('Middle name of ' . $this->token_label);
     $t[$this->token_name . '.last_name'] = ts('Last name of ' . $this->token_label);
+    $t[$this->token_name . '.representative'] = ts('Representative of '.$this->token_label.' (for website only)');
+    $t[$this->token_name . '.representative_city'] = ts('Representative City of '.$this->token_label.' (for website only)');
+    $t[$this->token_name . '.representative_phone'] = ts('Representative Phone of '.$this->token_label.' (for website only)');
+    $t[$this->token_name . '.representative_email'] = ts('Representative E-mail of '.$this->token_label.' (for website only)');
 
     $config = CRM_Tokens_Config_Config::singleton();
     if (!empty($this->salutations)) {
@@ -60,6 +64,10 @@ class CRM_Tokens_ActivitySourceContactTokens {
     $this->firstNameToken($values, $cids, 'first_name');
     $this->middleNameToken($values, $cids, 'middle_name');
     $this->lastNameToken($values, $cids, 'last_name');
+    $this->representativeToken($values, $cids, 'representative');
+    $this->representativeToken($values, $cids, 'representative_city');
+    $this->representativeToken($values, $cids, 'representative_phone');
+    $this->representativeToken($values, $cids, 'representative_email');
 
     if (!empty($this->salutations)) {
       foreach ($this->salutations as $key => $value) {
@@ -417,6 +425,85 @@ class CRM_Tokens_ActivitySourceContactTokens {
       }
     }
   }
+
+  private function representativeToken(&$values, $cids, $token) {
+    $name = '';
+    $contacts_ids = $cids;
+    $reps = array();
+
+    if (!is_array($cids)) {
+      $contacts_ids = array($cids);
+    }
+    foreach($contacts_ids as $cid) {
+      if (!is_array($cids)) {
+        $value = $values;
+      } else {
+        $value = $values[$cid];
+      }
+
+      //Get contact id of authorized contact
+      $contact_id = $this->getSourceContactId($value);
+
+      //Get relationship type ids
+      $rel_type_authcontact = civicrm_api('RelationshipType', 'getsingle', array('version' => 3, 'sequential' => 1, 'name_b_a' => 'Authorised contact for'));
+      $rel_type_rep = civicrm_api('RelationshipType', 'getsingle', array('version' => 3, 'sequential' => 1, 'name_b_a' => 'Representative'));
+
+      if (!empty($rel_type_authcontact['id']) && !empty($contact_id)) {
+        //Get company of contact id
+        $rel_to_company = civicrm_api('Relationship', 'getsingle', array(
+          'version' => 3,
+          'sequential' => 1,
+          'relationship_type_id' => $rel_type_authcontact['id'],
+          'contact_id_b' => $contact_id,
+          'is_active' => 1,
+          'case_id' => 'null',
+        ));
+
+        //Get representative of company
+        $representative = civicrm_api('Relationship', 'getsingle', array(
+          'version' => 3,
+          'sequential' => 1,
+          'contact_id_a' => $rel_to_company['contact_id_a'],
+          'relationship_type_id' => $rel_type_rep['id'],
+        ));
+
+        //Get contact details of the representative and put it in array
+        $rep_contact_details = civicrm_api('Contact', 'getsingle', array('version' => 3, 'sequential' => 1, 'id' => $representative['contact_id_b']));
+
+        $reps[$value['contact_id_b']]['name'] = $rep_contact_details['display_name'];
+        $reps[$value['contact_id_b']]['phone'] = $rep_contact_details['phone'];
+        $reps[$value['contact_id_b']]['email'] = $rep_contact_details['email'];
+        $reps[$value['contact_id_b']]['city'] = $rep_contact_details['city'];
+      }
+
+      //Now put the values in a token
+      $rep_token = array();
+
+      if(is_array($reps)){
+        foreach($reps as $rep_id => $rep_details) {
+          if ($token == 'representative') {
+            $rep_token[$rep_id] = $reps[$value['contact_id_b']]['name'];
+          }
+          if ($token == 'representative_city') {
+            $rep_token[$rep_id] = $reps[$value['contact_id_b']]['city'];
+          }
+          if ($token == 'representative_phone') {
+            $rep_token[$rep_id] = $reps[$value['contact_id_b']]['phone'];
+          }
+          if ($token == 'representative_email') {
+            $rep_token[$rep_id] = $reps[$value['contact_id_b']]['email'];
+          }
+        }
+      }
+
+      if (!is_array($cids)) {
+        $values[$this->token_name . '.' . $token] = implode('|', $rep_token);
+      } else {
+        $values[$cid][$this->token_name . '.' . $token] = implode('|', $rep_token);
+      }
+    }
+  }
+
 
   protected function isTokenInTokens($tokens, $token) {
     if (in_array($token, $tokens)) {
