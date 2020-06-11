@@ -1,11 +1,11 @@
 <?php
 
 class CRM_Tokens_ClientCase extends CRM_Tokens_CaseRelationship {
-  
+
   protected $location_types = array();
-  
+
   protected $phone_types = array();
-  
+
   public function __construct($token_name, $token_label, $values, $case_id = null) {
     $this->token_name = $token_name;
     $this->token_label = $token_label;
@@ -47,12 +47,16 @@ class CRM_Tokens_ClientCase extends CRM_Tokens_CaseRelationship {
   }
 
   protected function getContactId() {
-    if ($this->contact_id) {
-      return $this->contact_id;
-    } elseif (!$this->case_id) {
-      return false;
-    }
+    /*
+      //This leads to incorrect token values when multiple cases are sent at the same time
+      if ($this->contact_id) {
+        return $this->contact_id;
+      } elseif (!$this->case_id) {
+        return false;
+      }
+    */
 
+    $this->contact_id = false;
     try {
       $this->contact_id = civicrm_api3('Case', 'getvalue', array(
         'return' => 'client_id',

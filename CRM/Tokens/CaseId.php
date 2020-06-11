@@ -45,9 +45,12 @@ class CRM_Tokens_CaseId {
   }
 
   public static function getCaseIdFromTokenValues($values, $cids) {
-    if (!empty(self::$caseId)) {
-      return;
-    }
+    /*
+      //This leads to incorrect token values when multiple cases are sent at the same time
+      if (!empty(self::$caseId)) {
+        return;
+      }
+    */
 
     $case_id = FALSE;
     $activity_id = FALSE;
