@@ -24,11 +24,12 @@ class CRM_Tokens_ActivitySourceContactTokens {
     $this->salutations_full = $config->getSalutionsFull();
     $this->salutations_greeting = $config->getSalutionsGreeting();
   }
+
   public function tokens(&$tokens) {
     $t = array();
     $t[$this->token_name . '.display_name'] = ts('Display name of ' . $this->token_label);
     $t[$this->token_name . '.first_name'] = ts('First name of ' . $this->token_label);
-    $t[$this->token_name . '.prefix'] = ts('Prefix of ' . $this->token_label);
+    $t[$this->token_name . '.individual_prefix'] = ts('Prefix of ' . $this->token_label);
     $t[$this->token_name . '.middle_name'] = ts('Middle name of ' . $this->token_label);
     $t[$this->token_name . '.last_name'] = ts('Last name of ' . $this->token_label);
     $t[$this->token_name . '.representative'] = ts('Representative of '.$this->token_label.' (for website only)');
@@ -59,15 +60,8 @@ class CRM_Tokens_ActivitySourceContactTokens {
   }
 
   public function tokenValues(&$values, $cids, $job = null, $tokens = array(), $context = null) {
-    $this->displayNameToken($values, $cids, 'display_name');
-    $this->prefixToken($values, $cids, 'prefix');
-    $this->firstNameToken($values, $cids, 'first_name');
-    $this->middleNameToken($values, $cids, 'middle_name');
-    $this->lastNameToken($values, $cids, 'last_name');
-    $this->representativeToken($values, $cids, 'representative');
-    $this->representativeToken($values, $cids, 'representative_city');
-    $this->representativeToken($values, $cids, 'representative_phone');
-    $this->representativeToken($values, $cids, 'representative_email');
+    $this->nameToken($values, $cids, array('display_name','individual_prefix','first_name','middle_name','last_name'));
+    $this->representativeToken($values, $cids, array('representative','representative_city','representative_phone','representative_email'));
 
     if (!empty($this->salutations)) {
       foreach ($this->salutations as $key => $value) {
@@ -94,34 +88,7 @@ class CRM_Tokens_ActivitySourceContactTokens {
     }
   }
 
-  private function prefixToken(&$values, $cids, $token) {
-    $prefix = '';
-    $contacts_ids = $cids;
-    if (!is_array($cids)) {
-      $contacts_ids = array($cids);
-    }
-    foreach($contacts_ids as $cid) {
-      if (!is_array($cids)) {
-        $value = $values;
-      } else {
-        $value = $values[$cid];
-      }
-      $contact_id = $this->getSourceContactId($value);
-      if ($contact_id) {
-        $prefix = civicrm_api3('Contact', 'getvalue', array(
-          'return' => 'individual_prefix',
-          'id' => $contact_id
-        ));
-      }
-      if (!is_array($cids)) {
-        $values[$this->token_name . '.' . $token] = $prefix;
-      } else {
-        $values[$cid][$this->token_name . '.' . $token] = $prefix;
-      }
-    }
-  }
-
-  private function firstNameToken(&$values, $cids, $token) {
+  private function nameToken(&$values, $cids, $tokens = array()) {
     $name = '';
     $contacts_ids = $cids;
     if (!is_array($cids)) {
@@ -134,97 +101,30 @@ class CRM_Tokens_ActivitySourceContactTokens {
         $value = $values[$cid];
       }
       $contact_id = $this->getSourceContactId($value);
-      if ($contact_id) {
-        $name = civicrm_api3('Contact', 'getvalue', array(
-          'return' => 'first_name',
-          'id' => $contact_id
-        ));
-      }
-      if (!is_array($cids)) {
-        $values[$this->token_name . '.' . $token] = $name;
-      } else {
-        $values[$cid][$this->token_name . '.' . $token] = $name;
-      }
-    }
-  }
 
-  private function middleNameToken(&$values, $cids, $token) {
-    $name = '';
-    $contacts_ids = $cids;
-    if (!is_array($cids)) {
-      $contacts_ids = array($cids);
-    }
-    foreach($contacts_ids as $cid) {
-      if (!is_array($cids)) {
-        $value = $values;
-      } else {
-        $value = $values[$cid];
-      }
-      $contact_id = $this->getSourceContactId($value);
       if ($contact_id) {
-        $name = civicrm_api3('Contact', 'getvalue', array(
-          'return' => 'middle_name',
+        $name = civicrm_api3('Contact', 'getsingle', array(
           'id' => $contact_id
         ));
       }
-      if (!is_array($cids)) {
-        $values[$this->token_name . '.' . $token] = $name;
-      } else {
-        $values[$cid][$this->token_name . '.' . $token] = $name;
-      }
-    }
-  }
 
-  private function lastNameToken(&$values, $cids, $token) {
-    $name = '';
-    $contacts_ids = $cids;
-    if (!is_array($cids)) {
-      $contacts_ids = array($cids);
-    }
-    foreach($contacts_ids as $cid) {
-      if (!is_array($cids)) {
-        $value = $values;
-      } else {
-        $value = $values[$cid];
-      }
-      $contact_id = $this->getSourceContactId($value);
-      if ($contact_id) {
-        $name = civicrm_api3('Contact', 'getvalue', array(
-          'return' => 'last_name',
-          'id' => $contact_id
-        ));
-      }
-      if (!is_array($cids)) {
-        $values[$this->token_name . '.' . $token] = $name;
-      } else {
-        $values[$cid][$this->token_name . '.' . $token] = $name;
-      }
-    }
-  }
+      if(is_array($name) && is_array($tokens)){
+        foreach($tokens as $token) {
+          $name_token_value = '';
+          $name_token_value = $name[$token];
 
-  private function displayNameToken(&$values, $cids, $token) {
-    $name = '';
-    $contacts_ids = $cids;
-    if (!is_array($cids)) {
-      $contacts_ids = array($cids);
-    }
-    foreach($contacts_ids as $cid) {
-      if (!is_array($cids)) {
-        $value = $values;
-      } else {
-        $value = $values[$cid];
+          if (!is_array($cids)) {
+            $values[$this->token_name . '.' . $token] = $name_token_value;
+          } else {
+            $values[$cid][$this->token_name . '.' . $token] = $name_token_value;
+          }
+        }
       }
-      $contact_id = $this->getSourceContactId($value);
-      if ($contact_id) {
-        $name = civicrm_api3('Contact', 'getvalue', array(
-          'return' => 'display_name',
-          'id' => $contact_id
-        ));
-      }
+
       if (!is_array($cids)) {
-        $values[$this->token_name . '.' . $token] = $name;
+        $values[$this->token_name . '.' . $token] = $name[$token];
       } else {
-        $values[$cid][$this->token_name . '.' . $token] = $name;
+        $values[$cid][$this->token_name . '.' . $token] = $name[$token];
       }
     }
   }
@@ -281,11 +181,6 @@ class CRM_Tokens_ActivitySourceContactTokens {
       }
       $contact_id = $this->getSourceContactId($value);
       if ($contact_id) {
-        $name = civicrm_api3('Contact', 'getvalue', array(
-          'return' => 'display_name',
-          'id' => $contact_id
-        ));
-
         $params = array(
           'version' => 3,
           'sequential' => 1,
@@ -340,11 +235,6 @@ class CRM_Tokens_ActivitySourceContactTokens {
       }
       $contact_id = $this->getSourceContactId($value);
       if ($contact_id) {
-        $name = civicrm_api3('Contact', 'getvalue', array(
-          'return' => 'display_name',
-          'id' => $contact_id
-        ));
-
         $params = array(
           'version' => 3,
           'sequential' => 1,
@@ -399,11 +289,6 @@ class CRM_Tokens_ActivitySourceContactTokens {
       }
       $contact_id = $this->getSourceContactId($value);
       if ($contact_id) {
-        $name = civicrm_api3('Contact', 'getvalue', array(
-          'return' => 'display_name',
-          'id' => $contact_id
-        ));
-
         $params = array(
           'version' => 3,
           'sequential' => 1,
@@ -426,7 +311,7 @@ class CRM_Tokens_ActivitySourceContactTokens {
     }
   }
 
-  private function representativeToken(&$values, $cids, $token) {
+  private function representativeToken(&$values, $cids, $tokens = array()) {
     $name = '';
     $contacts_ids = $cids;
     $reps = array();
@@ -435,6 +320,7 @@ class CRM_Tokens_ActivitySourceContactTokens {
       $contacts_ids = array($cids);
     }
     foreach($contacts_ids as $cid) {
+      $contact_id = '';
       if (!is_array($cids)) {
         $value = $values;
       } else {
@@ -445,35 +331,52 @@ class CRM_Tokens_ActivitySourceContactTokens {
       $contact_id = $this->getSourceContactId($value);
 
       //Get relationship type ids
-      $rel_type_authcontact = civicrm_api('RelationshipType', 'getsingle', array('version' => 3, 'sequential' => 1, 'name_b_a' => 'Authorised contact for'));
-      $rel_type_rep = civicrm_api('RelationshipType', 'getsingle', array('version' => 3, 'sequential' => 1, 'name_b_a' => 'Representative'));
+      try{
+        $rel_type_authcontact = civicrm_api('RelationshipType', 'getsingle', array('version' => 3, 'sequential' => 1, 'name_b_a' => 'Authorised contact for'));
+        $rel_type_rep = civicrm_api('RelationshipType', 'getsingle', array('version' => 3, 'sequential' => 1, 'name_b_a' => 'Representative'));
 
-      if (!empty($rel_type_authcontact['id']) && !empty($contact_id)) {
-        //Get company of contact id
-        $rel_to_company = civicrm_api('Relationship', 'getsingle', array(
-          'version' => 3,
-          'sequential' => 1,
-          'relationship_type_id' => $rel_type_authcontact['id'],
-          'contact_id_b' => $contact_id,
-          'is_active' => 1,
-          'case_id' => 'null',
-        ));
+        if (!empty($rel_type_authcontact['id']) && !empty($contact_id)) {
+          //Get company of contact id
+          $rel_to_company = array();
+          $rel_to_company = civicrm_api('Relationship', 'getsingle', array(
+            'version' => 3,
+            'sequential' => 1,
+            'relationship_type_id' => $rel_type_authcontact['id'],
+            'contact_id_b' => $contact_id,
+            'is_active' => 1,
+            'case_id' => 'null',
+          ));
 
-        //Get representative of company
-        $representative = civicrm_api('Relationship', 'getsingle', array(
-          'version' => 3,
-          'sequential' => 1,
-          'contact_id_a' => $rel_to_company['contact_id_a'],
-          'relationship_type_id' => $rel_type_rep['id'],
-        ));
+          //Get representative of company
+          $representative = array();
+          if(!empty($rel_to_company['contact_id_a']) && !empty($rel_type_rep['id'])){
+            $representative = civicrm_api('Relationship', 'get', array(
+              'version' => 3,
+              'sequential' => 1,
+              'contact_id_a' => $rel_to_company['contact_id_a'],
+              'relationship_type_id' => $rel_type_rep['id'],
+              'case_id' => 'null'
+            ));
+          }
+          if(!empty($representative['values'][0])){
+            $representative = reset($representative['values']);
 
-        //Get contact details of the representative and put it in array
-        $rep_contact_details = civicrm_api('Contact', 'getsingle', array('version' => 3, 'sequential' => 1, 'id' => $representative['contact_id_b']));
+            if(!empty($representative['contact_id_b'])){
+              //Get contact details of the representative and put it in array
+              $rep_contact_details = array();
+              $rep_contact_details = civicrm_api('Contact', 'getsingle', array('version' => 3, 'sequential' => 1, 'id' => $representative['contact_id_b']));
 
-        $reps[$value['contact_id_b']]['name'] = $rep_contact_details['display_name'];
-        $reps[$value['contact_id_b']]['phone'] = $rep_contact_details['phone'];
-        $reps[$value['contact_id_b']]['email'] = $rep_contact_details['email'];
-        $reps[$value['contact_id_b']]['city'] = $rep_contact_details['city'];
+              if(!empty($rep_contact_details['display_name'])){
+                $reps[$representative['contact_id_b']]['name'] = $rep_contact_details['display_name'];
+                $reps[$representative['contact_id_b']]['phone'] = $rep_contact_details['phone'];
+                $reps[$representative['contact_id_b']]['email'] = $rep_contact_details['email'];
+                $reps[$representative['contact_id_b']]['city'] = $rep_contact_details['city'];
+              }
+            }
+          }
+        }
+      } catch (Exception $ex){
+
       }
 
       //Now put the values in a token
@@ -481,25 +384,27 @@ class CRM_Tokens_ActivitySourceContactTokens {
 
       if(is_array($reps)){
         foreach($reps as $rep_id => $rep_details) {
-          if ($token == 'representative') {
-            $rep_token[$rep_id] = $reps[$value['contact_id_b']]['name'];
-          }
-          if ($token == 'representative_city') {
-            $rep_token[$rep_id] = $reps[$value['contact_id_b']]['city'];
-          }
-          if ($token == 'representative_phone') {
-            $rep_token[$rep_id] = $reps[$value['contact_id_b']]['phone'];
-          }
-          if ($token == 'representative_email') {
-            $rep_token[$rep_id] = $reps[$value['contact_id_b']]['email'];
+          foreach($tokens as $token) {
+            if ($token == 'representative') {
+              $rep_token[$rep_id] = $reps[$rep_id]['name'];
+            }
+            if ($token == 'representative_city') {
+              $rep_token[$rep_id] = $reps[$rep_id]['city'];
+            }
+            if ($token == 'representative_phone') {
+              $rep_token[$rep_id] = $reps[$rep_id]['phone'];
+            }
+            if ($token == 'representative_email') {
+              $rep_token[$rep_id] = $reps[$rep_id]['email'];
+            }
+
+            if (!is_array($cids)) {
+              $values[$this->token_name . '.' . $token] = implode('|', $rep_token);
+            } else {
+              $values[$cid][$this->token_name . '.' . $token] = implode('|', $rep_token);
+            }
           }
         }
-      }
-
-      if (!is_array($cids)) {
-        $values[$this->token_name . '.' . $token] = implode('|', $rep_token);
-      } else {
-        $values[$cid][$this->token_name . '.' . $token] = implode('|', $rep_token);
       }
     }
   }
