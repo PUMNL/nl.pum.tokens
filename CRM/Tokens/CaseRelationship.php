@@ -116,6 +116,8 @@ class CRM_Tokens_CaseRelationship {
     $t[$token_name . '.main_fax'] = ts('Main fax number of ' . $token_label);
     $t[$token_name . '.display_name'] = ts('Display name of ' . $token_label);
     $t[$token_name . '.email'] = ts('E-mail address of ' . $token_label);
+    $t[$token_name . '.home_email'] = ts('Home e-mail address of ' . $token_label);
+    $t[$token_name . '.work_email'] = ts('Work e-mail address of ' . $token_label);
     $t[$token_name . '.passport_first_name'] = ts('Passport firstname of ' . $token_label);
     $t[$token_name . '.passport_last_name'] = ts('Passport lastname of ' . $token_label);
     $t[$token_name . '.passport_number'] = ts('Passport number of ' . $token_label);
@@ -204,6 +206,12 @@ class CRM_Tokens_CaseRelationship {
     }
     if ($this->isTokenInTokens($tokens, 'email')) {
       $this->emailToken($values, $cids, 'email');
+    }
+    if ($this->isTokenInTokens($tokens, 'home_email')) {
+      $this->homeEmailToken($values, $cids, 'home_email');
+    }
+    if ($this->isTokenInTokens($tokens, 'work_email')) {
+      $this->workEmailToken($values, $cids, 'work_email');
     }
     if ($this->isTokenInTokens($tokens, 'work_phone')) {
       $this->workPhoneToken($values, $cids, 'work_phone');
@@ -846,6 +854,60 @@ class CRM_Tokens_CaseRelationship {
 
       if (!empty($email) && !empty($email['email'])) {
         $formattedEmail = '<a href="mailto:' . $email['email'] . '">' . $email['email'] . '</a>';
+      }
+    }
+    $tokenValue = $formattedEmail;
+
+    $this->setTokenValue($values, $cids, $token, $tokenValue);
+  }
+
+  private function homeEmailToken(&$values, $cids, $token) {
+    $formattedEmail = '';
+    if ($this->getContactId()) {
+      $result_homeemail_location = civicrm_api('LocationType', 'getsingle', array('version' => 3, 'sequential' => 1, 'name' => 'Home'));
+
+      if(!empty($result_homeemail_location['id'])){
+        $email = civicrm_api('Email', 'get', array(
+          'contact_id' => $this->getContactId(),
+          'version' => 3,
+          'location_type_id' => $result_homeemail_location['id']
+        ));
+
+        if(is_array($email['values']) && count($email['values'])>0){
+          foreach($email['values'] as $key => $email){
+            if (!empty($email) && !empty($email['email'])) {
+              $formattedEmail = '<a href="mailto:' . $email['email'] . '">' . $email['email'] . '</a>';
+              break;
+            }
+          }
+        }
+      }
+    }
+    $tokenValue = $formattedEmail;
+
+    $this->setTokenValue($values, $cids, $token, $tokenValue);
+  }
+
+  private function workEmailToken(&$values, $cids, $token) {
+    $formattedEmail = '';
+    if ($this->getContactId()) {
+      $result_workemail_location = civicrm_api('LocationType', 'getsingle', array('version' => 3, 'sequential' => 1, 'name' => 'Work'));
+
+      if(!empty($result_workemail_location['id'])){
+        $email = civicrm_api('Email', 'get', array(
+          'contact_id' => $this->getContactId(),
+          'version' => 3,
+          'location_type_id' => $result_workemail_location['id']
+        ));
+
+        if(is_array($email['values']) && count($email['values'])>0){
+          foreach($email['values'] as $key => $email){
+            if (!empty($email) && !empty($email['email'])) {
+              $formattedEmail = '<a href="mailto:' . $email['email'] . '">' . $email['email'] . '</a>';
+              break;
+            }
+          }
+        }
       }
     }
     $tokenValue = $formattedEmail;
