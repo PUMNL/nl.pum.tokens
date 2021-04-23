@@ -8,7 +8,8 @@ class CRM_Tokens_CaseNumber {
   protected $case_number_sequence;
   protected $case_number_type;
   protected $case_number_country;
-  
+  protected $case_url;
+
   public function __construct($token_name, $token_label, $case_id = null) {
     $this->token_name = $token_name;
     $this->token_label = $token_label;
@@ -29,6 +30,17 @@ class CRM_Tokens_CaseNumber {
     } catch (Exception $e) {
       //do nothing
     }
+
+    try {
+      $case_contact_id = CRM_Core_DAO::singleValueQuery("SELECT contact_id FROM civicrm_case_contact WHERE case_id = %1", array(1 => array((int)$this->case_id, 'Integer')));
+      $environment_baseurl = CRM_Utils_System::baseURL();
+      if(substr($environment_baseurl, -1) == '/') {
+        $environment_baseurl = substr($environment_baseurl, 0, -1);  //remove trailing slash
+      }
+      $this->case_url  = $environment_baseurl.CRM_Utils_System::url('civicrm/contact/view/case', 'action=view&reset=1&id=' . $this->case_id . '&cid=' . $case_contact_id);
+    } catch (Exception $e) {
+      //do nothing
+    }
   }
 
   public function tokens(&$tokens) {
@@ -37,9 +49,10 @@ class CRM_Tokens_CaseNumber {
     $t[$this->token_name.'.type'] = ts('Type code in '.$this->token_label);
     $t[$this->token_name.'.country'] = ts('County code in  '.$this->token_label);
     $t[$this->token_name.'.full'] = ts('Full notation of '.$this->token_label);
+    $t[$this->token_name.'.case_url'] = ts('Case URL of '.$this->token_label);
     $tokens[$this->token_name] = $t;
   }
-  
+
   public function tokenValues(&$values, $cids, $job = null, $tokens = array(), $context = null) {
     if ($this->checkToken($tokens, 'sequence')) {
       $this->sequenceToken($values, $cids, 'sequence');
@@ -53,36 +66,46 @@ class CRM_Tokens_CaseNumber {
     if ($this->checkToken($tokens, 'full')) {
       $this->fullToken($values, $cids, 'full');
     }
+    if ($this->checkToken($tokens, 'case_url')) {
+      $this->caseURLToken($values, $cids, 'case_url');
+    }
   }
-  
+
   private function sequenceToken(&$values, $cids, $token) {
     $value = $this->case_number_sequence;
     foreach($cids as $cid) {
       $values[$cid][$this->token_name.'.'.$token] = $value;
     }
   }
-  
+
   private function typeToken(&$values, $cids, $token) {
     $value = $this->case_number_type;
     foreach($cids as $cid) {
       $values[$cid][$this->token_name.'.'.$token] = $value;
     }
   }
-  
+
   private function countryToken(&$values, $cids, $token) {
     $value = $this->case_number_country;
     foreach($cids as $cid) {
       $values[$cid][$this->token_name.'.'.$token] = $value;
     }
   }
-  
+
   private function fullToken(&$values, $cids, $token) {
     $value = preg_replace('/\s+/', ' ',trim(implode(' ', array($this->case_number_sequence, $this->case_number_type, $this->case_number_country))));
     foreach($cids as $cid) {
       $values[$cid][$this->token_name.'.'.$token] = $value;
     }
   }
-  
+
+  private function caseURLToken(&$values, $cids, $token) {
+    $value = $this->case_url;
+    foreach($cids as $cid) {
+      $values[$cid][$this->token_name.'.'.$token] = $value;
+    }
+  }
+
   /**
    * Returns true when token in set in the tokens array
    *
