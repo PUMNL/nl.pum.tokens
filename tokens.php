@@ -42,6 +42,7 @@ function tokens_civicrm_tokens(&$tokens) {
 
   // parent case tokens
   CRM_Tokens_ClientCase::tokens($tokens, 'parent_client', 'Parent Client');
+  CRM_Tokens_ClientCase::tokens($tokens, 'parent_authorised_contact', 'Parent Authorised contact');
   CRM_Tokens_CaseRelationship::tokens($tokens, 'parent_representative', 'Parent Representative');
   CRM_Tokens_CaseRelationship::tokens($tokens, 'parent_expert', 'Parent Expert');
   CRM_Tokens_CaseRelationship::tokens($tokens, 'parent_authorised_contact', 'Parent Authorised contact');
